@@ -1,3 +1,11 @@
 {
+    "files.exclude": {
+        "**/.git": true,
+        ".coverage/": true,
+        ".testresults/": true,
+        "**/*.exe": true,
+        "captain-githook": true
+    },
     "cSpell.enabled": true,
+    "go.autocompleteUnimportedPackages": false,
 }
