@@ -1,2 +1,2 @@
-# captain-hook
-Utility for setting up git hooks for Golang repos
+# captain-githook
+git hook utility for Go codebases
