@@ -1,4 +1,4 @@
-package main 
+package main
 
 import (
 	"fmt"
@@ -11,21 +11,24 @@ func main() {
 	var runner, runnerArg string
 
 	if runtime.GOOS == "windows" {
-		runner = "cmd"
+		runner = "cmd.exe"
 		runnerArg = "/C"
 	} else {
 		runner = "sh"
 		runnerArg = "-c"
 	}
 
-	hookScript := "git rev-parse --show-toplevel"
-	cmd := exec.Command(runner, runnerArg, hookScript)
+	// hookScript := "git rev-parse --show-toplevel"
+	hookScript := "dir"
+    cmd := exec.Command(runner, runnerArg, hookScript)
+    cmd.Dir = "c:/dev"
 	out, err := cmd.CombinedOutput()
 
 	if err != nil {
 		fmt.Printf("Crashed and burned with error %s\n", err)
 		fmt.Printf("Error details: %s\n", string(out[:len(out)-1]))
 	} else {
-		fmt.Printf("The output was: '%s'\n", string(out[:len(out)-1]))
+        fmt.Printf("The output was: %s", string(out[:len(out)-1]))
+		// fmt.Printf("The output was: '%s'\n", string(out[:len(out)-1]))
 	}
 }
