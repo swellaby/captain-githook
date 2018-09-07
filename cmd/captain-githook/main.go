@@ -3,10 +3,12 @@ package main
 import (
 	"fmt"
 	"os/exec"
-	"runtime"
+    "runtime"
+    // "github.com/swellaby/captain-githook/pkg/captaingithook"
 )
 
 func main() {
+    // captaingithook.RunCommand("", "")
 	fmt.Println("Ahoy there Matey!")
 	var runner, runnerArg string
 

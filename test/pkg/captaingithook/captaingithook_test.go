@@ -1,1 +1,1 @@
-package captaingithook
+package captaingithook_test
