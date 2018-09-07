@@ -3,9 +3,14 @@
         "**/.git": true,
         ".coverage/": true,
         ".testresults/": true,
-        "**/*.exe": true,
+        "**/*.exe": false,
         "captain-githook": true
     },
     "cSpell.enabled": true,
     "go.autocompleteUnimportedPackages": false,
+    "go.vetOnSave": "off",
+    "go.testOnSave": false,
+    "[go]": {
+        "editor.formatOnSave": false
+     }
 }
