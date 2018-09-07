@@ -4,7 +4,7 @@ import (
 )
 
 func writeFile (filePath string) error {
-    return nil
+	return nil
 }
 
 func readFile (filePath string) error {

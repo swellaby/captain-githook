@@ -8,7 +8,6 @@ import (
 )
 
 func main() {
-    // captaingithook.RunCommand("", "")
 	fmt.Println("Ahoy there Matey!")
 	var runner, runnerArg string
 

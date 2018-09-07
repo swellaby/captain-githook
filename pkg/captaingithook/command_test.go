@@ -8,7 +8,7 @@ import (
 func TestGetRunnerInfoReturnsCorrectValueOnWindows(t *testing.T) {
     const expectedRunner = "cmd.exe"
     const expectedRunnerArg = "/C"
-    runner, runnerArg := GetRunnerInfo("windows")
+	runner, runnerArg := GetRunnerInfo("windows")
 
     if runner != expectedRunner {
         t.Errorf("Runner was incorrect. Expected: %s, but got: %s.", expectedRunner, runner)

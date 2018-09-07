@@ -1,13 +1,13 @@
 package captaingithook
 
 import (
-    "fmt"
+	"fmt"
     "os/exec"
     "runtime"
 )
 
 func getRunnerInfo(operatingSystem string) (runner, runnerArg string) {
-    if operatingSystem == "windows" {
+	if operatingSystem == "windows" {
 		runner = "cmd.exe"
 		runnerArg = "/C"
 	} else {

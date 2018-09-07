@@ -4,7 +4,7 @@ import (
 )
 
 func getGitRepoRootDirectoryPath () (string, error) {
-    return "", nil
+	return "", nil
 }
 
 func getGitRepoHooksDirectoryPath () (string, error) {

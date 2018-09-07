@@ -58,7 +58,7 @@ func getRepoConfig (repoRootDirectoryPath string) *Config {
     }
 
     for _, configFileName := range configFileNames {
-        configFilePath := repoRootDirectoryPath + "/" + configFileName
+    	configFilePath := repoRootDirectoryPath + "/" + configFileName
         readFile(configFilePath)
     }
 
