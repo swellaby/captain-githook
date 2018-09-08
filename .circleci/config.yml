@@ -8,3 +8,4 @@ jobs:
       - checkout
       - run: go get ./...
       - run: mage test
+
