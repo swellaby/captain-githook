@@ -11,3 +11,8 @@ jobs:
       - run: go get ./...
       - run: mage test
 
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - go1.11
