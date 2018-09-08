@@ -8,7 +8,9 @@ jobs:
 
     steps:
       - checkout
-      - run: go get -d ./...
+      - run:
+          name: install mage
+          command: go get -d github.com/magefile/mage
       - run: mage test
 
 workflows:
