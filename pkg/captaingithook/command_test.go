@@ -1,14 +1,13 @@
-package captaingithook_test
+package captaingithook
 
 import (
-    . "github.com/swellaby/captain-githook/pkg/captaingithook"
     "testing"
 )
 
 func TestGetRunnerInfoReturnsCorrectValueOnWindows(t *testing.T) {
     const expectedRunner = "cmd.exe"
     const expectedRunnerArg = "/C"
-	runner, runnerArg := GetRunnerInfo("windows")
+	runner, runnerArg := getRunnerInfo("windows")
 
     if runner != expectedRunner {
         t.Errorf("Runner was incorrect. Expected: %s, but got: %s.", expectedRunner, runner)
@@ -29,7 +28,7 @@ func TestGetRunnerInfoReturnsCorrectValueOnNonWindows(t *testing.T) {
     }
 
     for _, os := range nonWindowsOperatingSystems {
-        runner, runnerArg := GetRunnerInfo(os)
+        runner, runnerArg := getRunnerInfo(os)
 
         if runner != expectedRunner {
             t.Errorf("Runner was incorrect for OS: %s. Expected: %s, but got: %s.", os, expectedRunner, runner)
