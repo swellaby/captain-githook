@@ -3,7 +3,8 @@ jobs:
   go1.11:
     docker:
       - image: circleci/golang:1.11
-      working_directory: ~/captain-githook
+
+    working_directory: ~/captain-githook
 
     steps:
       - checkout
