@@ -12,7 +12,7 @@ jobs:
           name: install mage
           command: |
             git clone git@github.com:magefile/mage ~/mage
-            go run ~/mage/bootstrap.go install
+            ls -R ~/
       - run: go test -v ./pkg/...
 
 workflows:
