@@ -6,6 +6,8 @@
         "codebases",
         "githook",
         "githookrc",
+        "golint",
+        "magefile",
         "repo",
         "swellaby"
     ],
