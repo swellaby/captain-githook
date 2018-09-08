@@ -11,9 +11,9 @@ jobs:
       - run:
           name: install mage
           command: |
-            go get -d github.com/magefile/mage
-            go run $GOPATH/src/github.com/magefile/mage/bootstrap.go install
-      - run: mage test
+            git clone git@github.com:magefile/mage ~/mage
+            go run ~/mage/bootstrap.go install
+      - run: go test -v ./pkg/...
 
 workflows:
   version: 2
