@@ -3,9 +3,18 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
+)
+
+const (
+	testResultsDirectory = ".testresults/"
+	coverageResultsDirectory = ".coverage/"
+	junitXmlTestResultsFileName = "junit.xml"
+	junitXmlTestResultsFile = testResultsDirectory + junitXmlTestResultsFileName
+	goTestResultsJsonFileName = "unit.json"
 )
 
 func goGetTool(tool string) {
@@ -26,20 +35,38 @@ func installDevTools() {
 }
 
 func createTestOutputDirectories() {
-	fmt.Println("Creating directories for test/coverage/etc. output files...")
+	os.MkdirAll(testResultsDirectory, os.ModePerm)
+	os.MkdirAll(coverageResultsDirectory, os.ModePerm)
+}
+
+func Td() {
+	createTestOutputDirectories()
+	testArgs := fmt.Sprintf("-v | go-junit-report > %s%s", testResultsDirectory, junitXmlTestResultsFile)
+	fmt.Printf("%s", testArgs)
 }
 
 func Setup() {
 	installDevTools()
+	fmt.Println("Creating directories for test/coverage/etc. output files...")
 	createTestOutputDirectories()
 }
 
 // Test Runs the unit tests
 func Test() error {
+	createTestOutputDirectories()
 	fmt.Println("Running tests...")
-	cmd := exec.Command("go", "test", "-v", "./pkg/...")
-	output, err := cmd.CombinedOutput()
-	fmt.Printf(string(output))
+	testCmd := exec.Command("go", "test", "./pkg/...", "-v")
+	testOutput, err := testCmd.CombinedOutput()
+	fmt.Printf(string(testOutput))
+
+	// Create JUnitXML Formatted Results
+	junitCmd := exec.Command("go-junit-report")
+	junitCmd.Stdin = bytes.NewBuffer(testOutput)
+	outfile, err := os.Create(junitXmlTestResultsFile)
+	defer outfile.Close()
+	junitCmd.Stdout = outfile
+	junitCmd.Run()
+
 	return err
 }
 
