@@ -8,23 +8,33 @@ import (
 	"os/exec"
 )
 
-func goGetTool(tool string) (string, error) {
-	cmd := exec.Command("go", "get", "-u", tool)
+func goGetTool(tool string) {
+	cmd := exec.Command("go", "get", tool)
 	cmd.Dir = os.TempDir();
 	out, err := cmd.CombinedOutput()
-	return string(out), err
+	fmt.Printf("%s", string(out))
+
+	if err != nil {
+		os.Exit(1)
+	}
 }
 
-// var Default = Build
-
-func Install() error {
+func installDevTools() {
+	fmt.Println("Installing dev tools...")
+	fmt.Println("Installing go-junit-report...")
 	goGetTool("github.com/jstemmer/go-junit-report")
-	return nil
-	// _, err := installTool("go-junit-report", "github.com/jstemmer/go-junit-report")
-	// return nil
 }
 
-// Test Runs the unit tests.
+func createTestOutputDirectories() {
+	fmt.Println("Creating directories for test/coverage/etc. output files...")
+}
+
+func Setup() {
+	installDevTools()
+	createTestOutputDirectories()
+}
+
+// Test Runs the unit tests
 func Test() error {
 	fmt.Println("Running tests...")
 	cmd := exec.Command("go", "test", "-v", "./pkg/...")
@@ -33,7 +43,7 @@ func Test() error {
 	return err
 }
 
-// Lint Runs the linter.
+// Lint Runs the linter
 func Lint() error {
 	fmt.Println("Running golint...")
 	cmd := exec.Command("golint", "./...")
