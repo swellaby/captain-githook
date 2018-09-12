@@ -15,9 +15,8 @@ const (
 	coverageResultsDirectory = ".coverage/"
 	junitXmlTestResultsFileName = "junit.xml"
 	junitXmlTestResultsFile = testResultsDirectory + junitXmlTestResultsFileName
-	jsonTestResultsFileName = "unit.xml"
+	jsonTestResultsFileName = "unit.json"
 	jsonTestResultsFile = testResultsDirectory + jsonTestResultsFileName
-	goTestResultsJsonFileName = "unit.json"
 	coverageOutFileName = "coverage.out"
 	coberturaCoverageFileName = "cobertura.xml"
 	coverageOutFile = coverageResultsDirectory + coverageOutFileName
