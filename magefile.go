@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 const (
@@ -14,7 +15,13 @@ const (
 	coverageResultsDirectory = ".coverage/"
 	junitXmlTestResultsFileName = "junit.xml"
 	junitXmlTestResultsFile = testResultsDirectory + junitXmlTestResultsFileName
+	jsonTestResultsFileName = "unit.xml"
+	jsonTestResultsFile = testResultsDirectory + jsonTestResultsFileName
 	goTestResultsJsonFileName = "unit.json"
+	coverageOutFileName = "coverage.out"
+	coberturaCoverageFileName = "cobertura.xml"
+	coverageOutFile = coverageResultsDirectory + coverageOutFileName
+	coberturaCoverageFile = coverageResultsDirectory + coberturaCoverageFileName
 )
 
 func goGetTool(tool string) {
@@ -39,10 +46,9 @@ func createTestOutputDirectories() {
 	os.MkdirAll(coverageResultsDirectory, os.ModePerm)
 }
 
-func Td() {
-	createTestOutputDirectories()
-	testArgs := fmt.Sprintf("-v | go-junit-report > %s%s", testResultsDirectory, junitXmlTestResultsFile)
-	fmt.Printf("%s", testArgs)
+func cleanTestResultFiles() {
+	os.RemoveAll(testResultsDirectory)
+	os.RemoveAll(coverageResultsDirectory)
 }
 
 func Setup() {
@@ -51,15 +57,43 @@ func Setup() {
 	createTestOutputDirectories()
 }
 
+func getPackageNames(pkgPath string) string {
+	cmd := exec.Command("go", "list", pkgPath)
+	out, _ := cmd.CombinedOutput()
+	result := strings.TrimSuffix(string(out), "\n")
+	return result
+
+	// packages := strings.Split(string(out), "\n")
+	// for _, pkg := range packages {
+	// 	if len(pkg) < 1 {
+	// 		fmt.Println("nope, last one")
+	// 	} else {
+	// 		fmt.Printf("%s\n", pkg)
+	// 	}
+	// }
+}
+
 // Test Runs the unit tests
 func Test() error {
+	cleanTestResultFiles()
 	createTestOutputDirectories()
 	fmt.Println("Running tests...")
-	testCmd := exec.Command("go", "test", "./pkg/...", "-v")
+	pkg := getPackageNames("./pkg/...")
+	coverProfile := "-coverprofile=" + coverageOutFile
+	testCmd := exec.Command("go", "test", pkg, "-v", coverProfile)
 	testOutput, err := testCmd.CombinedOutput()
 	fmt.Printf(string(testOutput))
 
-	// Create JUnitXML Formatted Results
+	// Create Standard JSON Result File
+	jsonCmd := exec.Command("go", "tool", "test2json", "-t", "-p", pkg)
+	jsonCmd.Stdin = bytes.NewBuffer(testOutput)
+	jsonOutFile, err := os.Create(jsonTestResultsFile)
+	defer jsonOutFile.Close()
+	jsonCmd.Stdout = jsonOutFile
+	jsonCmd.Run()
+
+
+	// Create JUnit XML Result File
 	junitCmd := exec.Command("go-junit-report")
 	junitCmd.Stdin = bytes.NewBuffer(testOutput)
 	outfile, err := os.Create(junitXmlTestResultsFile)
