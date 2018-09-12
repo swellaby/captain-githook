@@ -9,10 +9,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: install mage
-          command: |
-            git clone git@github.com:magefile/mage ~/mage
-            cd ~/mage && go run bootstrap.go install
+          name: bootstrap repo
+          command: go run bootstrap.go
       - run: mage test
 
 workflows:
