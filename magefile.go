@@ -21,6 +21,8 @@ const (
 	coberturaCoverageFileName = "cobertura.xml"
 	coverageOutFile = coverageResultsDirectory + coverageOutFileName
 	coberturaCoverageFile = coverageResultsDirectory + coberturaCoverageFileName
+	goVetResultsFile = testResultsDirectory + "govet.out"
+	goLintResultsFile = testResultsDirectory + "golint.out"
 )
 
 func goGetTool(tool string) {
@@ -107,6 +109,21 @@ func Test() error {
 func Lint() error {
 	fmt.Println("Running golint...")
 	cmd := exec.Command("golint", "./...")
+	outfile, err := os.Create(goLintResultsFile)
+	defer outfile.Close()
+	cmd.Stdout = outfile
+	output, err := cmd.CombinedOutput()
+	fmt.Printf(string(output))
+	return err
+}
+
+// Lint Runs Vet
+func Vet() error {
+	fmt.Println("Running go vet...")
+	cmd := exec.Command("go", "vet", "./...")
+	outfile, err := os.Create(goVetResultsFile)
+	defer outfile.Close()
+	cmd.Stdout = outfile
 	output, err := cmd.CombinedOutput()
 	fmt.Printf(string(output))
 	return err
@@ -123,6 +140,7 @@ func Ci() {
 	Test()
 	fmt.Println()
 	Lint()
+	Vet()
 }
 
 func Clean() {
