@@ -5,6 +5,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -40,6 +41,8 @@ func installDevTools() {
 	fmt.Println("Installing dev tools...")
 	fmt.Println("Installing go-junit-report...")
 	goGetTool("github.com/jstemmer/go-junit-report")
+	fmt.Println("Installing gocover-cobertura...")
+	goGetTool("github.com/t-yuki/gocover-cobertura")
 }
 
 func createTestOutputDirectories() {
@@ -74,6 +77,16 @@ func getPackageNames(pkgPath string) string {
 	// }
 }
 
+func createCoberturaCodeCoverageReport() {
+	cmd := exec.Command("gocover-cobertura")
+	inFile, _ := ioutil.ReadFile(coverageOutFile)
+	cmd.Stdin = bytes.NewBuffer(inFile)
+	outFile, _ := os.Create(coberturaCoverageFile)
+	defer outFile.Close()
+	cmd.Stdout = outFile
+	cmd.Run()
+}
+
 // Test Runs the unit tests
 func Test() error {
 	cleanTestResultFiles()
@@ -89,18 +102,20 @@ func Test() error {
 	jsonCmd := exec.Command("go", "tool", "test2json", "-t", "-p", pkg)
 	jsonCmd.Stdin = bytes.NewBuffer(testOutput)
 	jsonOutFile, err := os.Create(jsonTestResultsFile)
-	defer jsonOutFile.Close()
 	jsonCmd.Stdout = jsonOutFile
 	jsonCmd.Run()
-
+	jsonOutFile.Close()
 
 	// Create JUnit XML Result File
 	junitCmd := exec.Command("go-junit-report")
 	junitCmd.Stdin = bytes.NewBuffer(testOutput)
 	outfile, err := os.Create(junitXmlTestResultsFile)
-	defer outfile.Close()
+
 	junitCmd.Stdout = outfile
 	junitCmd.Run()
+	outfile.Close()
+
+	createCoberturaCodeCoverageReport()
 
 	return err
 }

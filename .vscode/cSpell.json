@@ -7,13 +7,15 @@
         "codebases",
         "githook",
         "githookrc",
+        "gocover",
         "golint",
         "govet",
         "jstemmer",
         "junit",
         "magefile",
         "repo",
-        "swellaby"
+        "swellaby",
+        "yuki"
     ],
     "flagWords": [
 
