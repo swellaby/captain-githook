@@ -1,12 +1,11 @@
 package captaingithook
 
-import (
-)
+import ()
 
-func writeFile (filePath string) error {
+func writeFile(filePath string) error {
 	return nil
 }
 
-func readFile (filePath string) error {
-    return nil
+func readFile(filePath string) error {
+	return nil
 }

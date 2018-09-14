@@ -2,8 +2,8 @@ package captaingithook
 
 import (
 	"fmt"
-    "os/exec"
-    "runtime"
+	"os/exec"
+	"runtime"
 )
 
 func getRunnerInfo(operatingSystem string) (runner, runnerArg string) {

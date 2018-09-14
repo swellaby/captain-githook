@@ -12,23 +12,23 @@ import (
 )
 
 const (
-	testResultsDirectory = ".testresults/"
-	coverageResultsDirectory = ".coverage/"
+	testResultsDirectory        = ".testresults/"
+	coverageResultsDirectory    = ".coverage/"
 	junitXmlTestResultsFileName = "junit.xml"
-	junitXmlTestResultsFile = testResultsDirectory + junitXmlTestResultsFileName
-	jsonTestResultsFileName = "unit.json"
-	jsonTestResultsFile = testResultsDirectory + jsonTestResultsFileName
-	coverageOutFileName = "coverage.out"
-	coberturaCoverageFileName = "cobertura.xml"
-	coverageOutFile = coverageResultsDirectory + coverageOutFileName
-	coberturaCoverageFile = coverageResultsDirectory + coberturaCoverageFileName
-	goVetResultsFile = testResultsDirectory + "govet.out"
-	goLintResultsFile = testResultsDirectory + "golint.out"
+	junitXmlTestResultsFile     = testResultsDirectory + junitXmlTestResultsFileName
+	jsonTestResultsFileName     = "unit.json"
+	jsonTestResultsFile         = testResultsDirectory + jsonTestResultsFileName
+	coverageOutFileName         = "coverage.out"
+	coberturaCoverageFileName   = "cobertura.xml"
+	coverageOutFile             = coverageResultsDirectory + coverageOutFileName
+	coberturaCoverageFile       = coverageResultsDirectory + coberturaCoverageFileName
+	goVetResultsFile            = testResultsDirectory + "govet.out"
+	goLintResultsFile           = testResultsDirectory + "golint.out"
 )
 
 func goGetTool(tool string) {
 	cmd := exec.Command("go", "get", tool)
-	cmd.Dir = os.TempDir();
+	cmd.Dir = os.TempDir()
 	out, err := cmd.CombinedOutput()
 	fmt.Printf("%s", string(out))
 
