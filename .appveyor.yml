@@ -8,7 +8,7 @@ version: "{build}"
 
 install:
 #   - ps: $env:GOBIN = Invoke-Expression "go env"
-  - go run bootstrap.go
+#   - go run bootstrap.go
   - go env
 
 test_script:
