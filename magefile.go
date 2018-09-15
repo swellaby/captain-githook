@@ -12,18 +12,14 @@ import (
 )
 
 const (
-	testResultsDirectory        = ".testresults/"
-	coverageResultsDirectory    = ".coverage/"
-	junitXmlTestResultsFileName = "junit.xml"
-	junitXmlTestResultsFile     = testResultsDirectory + junitXmlTestResultsFileName
-	jsonTestResultsFileName     = "unit.json"
-	jsonTestResultsFile         = testResultsDirectory + jsonTestResultsFileName
-	coverageOutFileName         = "coverage.out"
-	coberturaCoverageFileName   = "cobertura.xml"
-	coverageOutFile             = coverageResultsDirectory + coverageOutFileName
-	coberturaCoverageFile       = coverageResultsDirectory + coberturaCoverageFileName
-	goVetResultsFile            = testResultsDirectory + "govet.out"
-	goLintResultsFile           = testResultsDirectory + "golint.out"
+	testResultsDirectory     = ".testresults/"
+	coverageResultsDirectory = ".coverage/"
+	junitXmlTestResultsFile  = testResultsDirectory + "junit.xml"
+	jsonTestResultsFile      = testResultsDirectory + "unit.json"
+	coverageOutFile          = coverageResultsDirectory + "coverage.out"
+	coberturaCoverageFile    = coverageResultsDirectory + "cobertura.xml"
+	goVetResultsFile         = testResultsDirectory + "govet.out"
+	goLintResultsFile        = testResultsDirectory + "golint.out"
 )
 
 func goGetTool(tool string) {
