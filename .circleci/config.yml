@@ -13,6 +13,10 @@ jobs:
           command: go run bootstrap.go
       - run: mage test
 
+      - run:
+          name: Push coverage to Codecov
+          command: bash <(curl -s https://codecov.io/bash) || true
+
 workflows:
   version: 2
   ci:
