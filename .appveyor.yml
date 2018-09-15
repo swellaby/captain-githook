@@ -2,21 +2,15 @@ skip_branch_with_pr: true
 build: off
 version: "{build}"
 
-# cache:
-#   - '%APPDATA%\npm-cache -> package-lock.json'
-#   - node_modules -> package-lock.json
+cache:
+  - '%GOPATH%-> magefile.go, mage.go, mage.sum'
 
 install:
   - ps: $env:GOBIN = "$(go env GOPATH)\bin"
   - ps: $env:PATH += ";$($env:GOBIN);"
-  - echo "GOBIN is " %GOBIN%
-  - echo "PATH is " %PATH%
   - go run bootstrap.go
 
 test_script:
-  - echo %GOBIN%
-  - set
-  - go env
   - mage test
 
 after_test:
