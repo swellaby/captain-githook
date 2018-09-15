@@ -12,23 +12,19 @@ import (
 )
 
 const (
-	testResultsDirectory = ".testresults/"
+	testResultsDirectory     = ".testresults/"
 	coverageResultsDirectory = ".coverage/"
-	junitXmlTestResultsFileName = "junit.xml"
-	junitXmlTestResultsFile = testResultsDirectory + junitXmlTestResultsFileName
-	jsonTestResultsFileName = "unit.json"
-	jsonTestResultsFile = testResultsDirectory + jsonTestResultsFileName
-	coverageOutFileName = "coverage.out"
-	coberturaCoverageFileName = "cobertura.xml"
-	coverageOutFile = coverageResultsDirectory + coverageOutFileName
-	coberturaCoverageFile = coverageResultsDirectory + coberturaCoverageFileName
-	goVetResultsFile = testResultsDirectory + "govet.out"
-	goLintResultsFile = testResultsDirectory + "golint.out"
+	junitXmlTestResultsFile  = testResultsDirectory + "junit.xml"
+	jsonTestResultsFile      = testResultsDirectory + "unit.json"
+	coverageOutFile          = coverageResultsDirectory + "coverage.out"
+	coberturaCoverageFile    = coverageResultsDirectory + "cobertura.xml"
+	goVetResultsFile         = testResultsDirectory + "govet.out"
+	goLintResultsFile        = testResultsDirectory + "golint.out"
 )
 
 func goGetTool(tool string) {
 	cmd := exec.Command("go", "get", tool)
-	cmd.Dir = os.TempDir();
+	cmd.Dir = os.TempDir()
 	out, err := cmd.CombinedOutput()
 	fmt.Printf("%s", string(out))
 
@@ -43,6 +39,8 @@ func installDevTools() {
 	goGetTool("github.com/jstemmer/go-junit-report")
 	fmt.Println("Installing gocover-cobertura...")
 	goGetTool("github.com/t-yuki/gocover-cobertura")
+	fmt.Println("Installing golangci-lint...")
+	goGetTool("github.com/golangci/golangci-lint/cmd/golangci-lint")
 }
 
 func createTestOutputDirectories() {

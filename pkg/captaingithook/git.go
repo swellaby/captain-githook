@@ -1,12 +1,11 @@
 package captaingithook
 
-import (
-)
+import ()
 
-func getGitRepoRootDirectoryPath () (string, error) {
+func getGitRepoRootDirectoryPath() (string, error) {
 	return "", nil
 }
 
-func getGitRepoHooksDirectoryPath () (string, error) {
-    return "", nil
+func getGitRepoHooksDirectoryPath() (string, error) {
+	return "", nil
 }

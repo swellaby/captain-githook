@@ -12,7 +12,7 @@ import (
 
 func installMage() {
 	cmd := exec.Command("go", "get", "github.com/magefile/mage")
-	cmd.Dir = os.TempDir();
+	cmd.Dir = os.TempDir()
 	out, err := cmd.CombinedOutput()
 
 	if err != nil {
@@ -25,7 +25,7 @@ func installMage() {
 }
 
 func runMageSetupTarget() {
-	cmd := exec.Command("mage", "setup",)
+	cmd := exec.Command("mage", "setup")
 	_, currentFilePath, _, _ := runtime.Caller(0)
 	cmd.Dir = path.Dir(currentFilePath)
 	out, err := cmd.CombinedOutput()

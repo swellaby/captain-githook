@@ -1,18 +1,16 @@
 package captaingithook
 
-import (
-)
+import ()
 
-const hookFileContents =
-`#!/bin/sh
+const hookFileContents = `#!/bin/sh
 # captain-githook
 
 hookName=` + "`basename \"$0\"`"
 
-func writeAllHookFiles () {
+func writeAllHookFiles() {
 
 }
 
-func removeAllHookFiles () {
+func removeAllHookFiles() {
 
 }
