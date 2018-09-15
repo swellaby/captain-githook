@@ -7,7 +7,7 @@ version: "{build}"
 #   - node_modules -> package-lock.json
 
 install:
-  - ps: $env:GOBIN = $env:GOPATH\bin
+  - ps: $env:GOBIN = "$($env:GOPATH)\bin;"
   - ps: $env:PATH += $env:GOBIN
   - go run bootstrap.go
   - go env
