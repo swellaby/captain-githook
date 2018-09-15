@@ -9,14 +9,17 @@ version: "{build}"
 install:
   - ps: $env:GOBIN = "$($env:GOPATH)\bin;"
   - ps: $env:PATH += $env:GOBIN
-  - go run bootstrap.go
-  - go env
-
-test_script:
-  - echo %PATH%
   - set
+  - echo "gobin is " %GOBIN%
   - go env
-  - mage test
+  - go run bootstrap.go
+
+
+# test_script:
+#   - echo %PATH%
+#   - set
+#   - go env
+#   - mage test
 
 # after_test:
 #   - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\.testresults\junit.xml))
