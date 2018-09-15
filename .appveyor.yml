@@ -3,7 +3,7 @@ build: off
 version: "{build}"
 
 cache:
-  - '%GOPATH%-> magefile.go, mage.go, mage.sum'
+  - c:\users\appveyor\go -> magefile.go, mage.go, mage.sum
 
 install:
   - ps: $env:GOBIN = "$(go env GOPATH)\bin"
