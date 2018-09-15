@@ -39,6 +39,8 @@ func installDevTools() {
 	goGetTool("github.com/jstemmer/go-junit-report")
 	fmt.Println("Installing gocover-cobertura...")
 	goGetTool("github.com/t-yuki/gocover-cobertura")
+	fmt.Println("Installing golangci-lint...")
+	goGetTool("github.com/golangci/golangci-lint/cmd/golangci-lint")
 }
 
 func createTestOutputDirectories() {

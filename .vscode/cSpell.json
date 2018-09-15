@@ -8,6 +8,7 @@
         "githook",
         "githookrc",
         "gocover",
+        "golangci",
         "golint",
         "govet",
         "jstemmer",
