@@ -7,11 +7,14 @@ version: "{build}"
 #   - node_modules -> package-lock.json
 
 install:
+#   - ps: $env:GOBIN = Invoke-Expression "go env"
   - go run bootstrap.go
   - go env
 
 test_script:
-  - mage test
+#   - mage test
+  - echo %PATH%
+  - set
 
-after_test:
-  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\.testresults\junit.xml))
+# after_test:
+#   - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\.testresults\junit.xml))
