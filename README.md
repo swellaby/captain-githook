@@ -10,6 +10,7 @@ git hook utility for Go codebases
 [![Sonar Quality Gate Badge][sonar-quality-gate-badge]][sonar-url]
 
 
+
 [linux-ci-badge]: https://swellaby.visualstudio.com/OpenSource/_apis/build/status/captain-githook/captain-githook-PR-Linux?branchName=master&label=linux%20build
 [linux-ci-url]: https://swellaby.visualstudio.com/OpenSource/_build/latest?definitionId=25
 [mac-ci-badge]: https://swellaby.visualstudio.com/OpenSource/_apis/build/status/captain-githook/captain-githook-PR-Mac?branchName=master&label=mac%20build
