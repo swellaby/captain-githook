@@ -18,6 +18,8 @@ const (
 	jsonTestResultsFile      = testResultsDirectory + "unit.json"
 	coverageOutFile          = coverageResultsDirectory + "coverage.out"
 	coberturaCoverageFile    = coverageResultsDirectory + "cobertura.xml"
+	htmlCoverageFile		 = coverageResultsDirectory + "coverage.html"
+	goCovJsonFile			 = coverageResultsDirectory + "gocov.json"
 	goVetResultsFile         = testResultsDirectory + "govet.out"
 	goLintResultsFile        = testResultsDirectory + "golint.out"
 )
@@ -37,8 +39,12 @@ func installDevTools() {
 	fmt.Println("Installing dev tools...")
 	fmt.Println("Installing go-junit-report...")
 	goGetTool("github.com/jstemmer/go-junit-report")
-	fmt.Println("Installing gocover-cobertura...")
-	goGetTool("github.com/t-yuki/gocover-cobertura")
+	fmt.Println("Installing gocov...")
+	goGetTool("github.com/axw/gocov/gocov")
+	fmt.Println("Installing gocovxml...")
+	goGetTool("github.com/AlekSi/gocov-xml")
+	fmt.Println("Installing gocov-html...")
+	goGetTool("github.com/matm/gocov-html")
 	fmt.Println("Installing golangci-lint...")
 	goGetTool("github.com/golangci/golangci-lint/cmd/golangci-lint")
 }
@@ -76,13 +82,35 @@ func getPackageNames(pkgPath string) string {
 }
 
 func createCoberturaCodeCoverageReport() {
-	cmd := exec.Command("gocover-cobertura")
-	inFile, _ := ioutil.ReadFile(coverageOutFile)
+	cmd := exec.Command("gocov-xml")
+	inFile, _ := ioutil.ReadFile(goCovJsonFile)
 	cmd.Stdin = bytes.NewBuffer(inFile)
 	outFile, _ := os.Create(coberturaCoverageFile)
 	defer outFile.Close()
 	cmd.Stdout = outFile
 	cmd.Run()
+}
+
+func createHtmlCodeCoverageReport() {
+	cmd := exec.Command("gocov-html", goCovJsonFile)
+	outFile, _ := os.Create(htmlCoverageFile)
+	defer outFile.Close()
+	cmd.Stdout = outFile
+	cmd.Run()
+}
+
+func createGoCovJsonFile() {
+	cmd := exec.Command("gocov", "convert", coverageOutFile)
+	outFile, _ := os.Create(goCovJsonFile)
+	defer outFile.Close()
+	cmd.Stdout = outFile
+	cmd.Run()
+}
+
+func createCoverageReports() {
+	createGoCovJsonFile()
+	createCoberturaCodeCoverageReport()
+	createHtmlCodeCoverageReport()
 }
 
 // Test Runs the unit tests
@@ -92,7 +120,7 @@ func Test() error {
 	fmt.Println("Running tests...")
 	pkg := getPackageNames("./pkg/...")
 	coverProfile := "-coverprofile=" + coverageOutFile
-	testCmd := exec.Command("go", "test", pkg, "-v", coverProfile)
+	testCmd := exec.Command("go", "test", pkg, "-v", coverProfile, "-covermode", "count")
 	testOutput, err := testCmd.CombinedOutput()
 	fmt.Printf(string(testOutput))
 
@@ -113,7 +141,7 @@ func Test() error {
 	junitCmd.Run()
 	outfile.Close()
 
-	createCoberturaCodeCoverageReport()
+	createCoverageReports()
 
 	return err
 }

@@ -4,7 +4,8 @@ git hook utility for Go codebases
 
 [![Linux CI Badge][linux-ci-badge]][linux-ci-url]
 [![Mac CI Badge][mac-ci-badge]][mac-ci-url]
-[![Windows CI Badge][windows-ci-badge]][windows-ci-url]
+[![Windows CI Badge][windows-ci-badge]][windows-ci-url]  
+
 [![Test Results Badge][tests-badge]][sonar-tests-url]
 [![Codecov Badge][codecov-badge]][codecov-url]
 [![Sonar Quality Gate Badge][sonar-quality-gate-badge]][sonar-url]
