@@ -18,8 +18,8 @@ const (
 	jsonTestResultsFile      = testResultsDirectory + "unit.json"
 	coverageOutFile          = coverageResultsDirectory + "coverage.out"
 	coberturaCoverageFile    = coverageResultsDirectory + "cobertura.xml"
-	htmlCoverageFile		 = coverageResultsDirectory + "index.html"
-	goCovJsonFile			 = coverageResultsDirectory + "gocov.json"
+	htmlCoverageFile         = coverageResultsDirectory + "index.html"
+	goCovJsonFile            = coverageResultsDirectory + "gocov.json"
 	goVetResultsFile         = testResultsDirectory + "govet.out"
 	goLintResultsFile        = testResultsDirectory + "golint.out"
 )
