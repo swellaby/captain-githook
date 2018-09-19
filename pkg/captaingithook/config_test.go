@@ -8,7 +8,7 @@ func TestIsValidConfigFileNameReturnsFalseOnInvalidName(t *testing.T) {
 	fileName := "captaingithook.yml"
 	isValid := isValidConfigFileName(fileName)
 
-	if isValid == true {
+	if isValid {
 		t.Errorf("Validity was wrong for file name: %s. Expected: true, but got: %t.", fileName, isValid)
 	}
 }
@@ -17,7 +17,7 @@ func TestIsValidConfigFileNameReturnsFalseOnEmptyName(t *testing.T) {
 	fileName := ""
 	isValid := isValidConfigFileName(fileName)
 
-	if isValid == true {
+	if isValid {
 		t.Errorf("Validity was wrong for file name: %s. Expected: true, but got: %t.", fileName, isValid)
 	}
 }
@@ -41,7 +41,7 @@ func TestIsValidConfigFileNameReturnsTrueOnValidNames(t *testing.T) {
 	for _, fileName := range validConfigFileNames {
 		isValid := isValidConfigFileName(fileName)
 
-		if isValid == false {
+		if !isValid {
 			t.Errorf("Validity was wrong for file name: %s. Expected: true, but got: %t.", fileName, isValid)
 		}
 	}
