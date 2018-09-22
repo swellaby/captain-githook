@@ -34,14 +34,15 @@ func isValidConfigFileName(fileName string) bool {
 }
 
 func createConfigFile(desiredFileName string) error {
-	var configFileName string
-	configFileName = configFileNames[0]
+	configFileName := ""
 
 	if isValidConfigFileName(desiredFileName) {
 		configFileName = desiredFileName
+	} else {
+		configFileName = configFileNames[0]
 	}
 
-	writeFile(configFileName)
+	writeFile(configFileName, "")
 
 	return nil
 }

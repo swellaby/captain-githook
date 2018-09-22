@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+const defaultConfigFileName = "captaingithook.json"
+
 func TestIsValidConfigFileNameReturnsFalseOnInvalidName(t *testing.T) {
 	fileName := "captaingithook.yml"
 	isValid := isValidConfigFileName(fileName)
@@ -24,7 +26,7 @@ func TestIsValidConfigFileNameReturnsFalseOnEmptyName(t *testing.T) {
 
 func TestIsValidConfigFileNameReturnsTrueOnValidNames(t *testing.T) {
 	validConfigFileNames := []string{
-		"captaingithook.json",
+		defaultConfigFileName,
 		".captaingithook.json",
 		"captaingithookrc",
 		".captaingithookrc",
@@ -44,5 +46,49 @@ func TestIsValidConfigFileNameReturnsTrueOnValidNames(t *testing.T) {
 		if !isValid {
 			t.Errorf("Validity was wrong for file name: %s. Expected: true, but got: %t.", fileName, isValid)
 		}
+	}
+}
+
+func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
+	originalWriteFile := writeFile
+	defer func() { writeFile = originalWriteFile }()
+	var actualFileName, actualData string
+	expectedData := ""
+	writeFile = func(fileName, data string) {
+		actualFileName = fileName
+		actualData = data
+	}
+
+	createConfigFile("")
+
+	if actualFileName != defaultConfigFileName {
+		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
+	}
+
+	if actualData != expectedData {
+		t.Errorf("Attempted to create wrong config file contents. Expected: %s, but got: %s.", expectedData, actualData)
+	}
+}
+
+func TestCreateConfigFileUsesSpecifiedFileName(t *testing.T) {
+	originalWriteFile := writeFile
+	defer func() { writeFile = originalWriteFile }()
+	var actualFileName, actualData string
+	expectedData := ""
+	writeFile = func(fileName, data string) {
+		actualFileName = fileName
+		actualData = data
+	}
+
+	desiredFileName := ".captain-githookrc"
+
+	createConfigFile(desiredFileName)
+
+	if actualFileName != desiredFileName {
+		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
+	}
+
+	if actualData != expectedData {
+		t.Errorf("Attempted to create wrong config file contents. Expected: %s, but got: %s.", expectedData, actualData)
 	}
 }

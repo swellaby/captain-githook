@@ -1,11 +1,25 @@
 package captaingithook
 
-import ()
+import (
+	"io/ioutil"
+	"os"
+)
 
-func writeFile(filePath string) error {
-	return nil
+var write = ioutil.WriteFile
+var read = ioutil.ReadFile
+
+var writeFile = func(filePath, contents string) {
+	err := write(filePath, []byte(contents), os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
 }
 
-func readFile(filePath string) error {
-	return nil
+var readFile = func(filePath string) []byte {
+	data, err := read(filePath)
+	if err != nil {
+		panic(err)
+	}
+
+	return data
 }
