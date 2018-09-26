@@ -1,8 +1,13 @@
 package captaingithook
 
 import (
+	"os/exec"
 	"testing"
 )
+
+type CommandRunner interface {
+	Run() string
+}
 
 func TestGetRunnerInfoReturnsCorrectValueOnWindows(t *testing.T) {
 	const expectedRunner = "cmd.exe"
@@ -38,4 +43,11 @@ func TestGetRunnerInfoReturnsCorrectValueOnNonWindows(t *testing.T) {
 			t.Errorf("Runner Arg was incorrect for OS: %s. Expected: %s, but got: %s.", os, expectedRunnerArg, runnerArg)
 		}
 	}
+}
+
+func TestRunSetsDirectoryWhenSpecified(t *testing.T) {
+	createCommand = func(name string, arg ...string) *exec.Cmd {
+		return nil
+	}
+	defer func() { createCommand = exec.Command }()
 }

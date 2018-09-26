@@ -29,7 +29,7 @@ func TestWriteFileDoesNotPanicOnSuccess(t *testing.T) {
 		t.Errorf("Attempted to write to wrong file. Expected: %s, but got: %s.", expectedFileName, actualFileName)
 	}
 
-	if bytes.Compare(actualData, expectedData) != 0 {
+	if !bytes.Equal(actualData, expectedData) {
 		t.Errorf("Attempted to write incorrect data file. Expected: %s, but got: %s.", expectedData, actualData)
 	}
 

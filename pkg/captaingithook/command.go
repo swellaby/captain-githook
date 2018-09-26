@@ -6,6 +6,9 @@ import (
 	"runtime"
 )
 
+var createCommand = exec.Command
+var runCommand = run
+
 func getRunnerInfo(operatingSystem string) (runner, runnerArg string) {
 	if operatingSystem == "windows" {
 		runner = "cmd.exe"
@@ -18,10 +21,10 @@ func getRunnerInfo(operatingSystem string) (runner, runnerArg string) {
 	return runner, runnerArg
 }
 
-func runCommand(command string, directory string) (resultOutput string, err error) {
+func run(command string, directory string) (resultOutput string, err error) {
 	runner, runnerArg := getRunnerInfo(runtime.GOOS)
 
-	cmd := exec.Command(runner, runnerArg, command)
+	cmd := createCommand(runner, runnerArg, command)
 
 	if len(directory) > 0 {
 		cmd.Dir = directory
