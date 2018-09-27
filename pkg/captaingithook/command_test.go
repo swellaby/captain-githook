@@ -5,9 +5,16 @@ import (
 	"testing"
 )
 
-type cmd struct {}
+type MockCommand struct {
+	CombinedOutputFunc func()([]byte, error)
+}
 
-// func (c *cmd) CombinedOutput() ()
+func (m MockCommand) CombinedOutput()([]byte, error) {
+	if m.CombinedOutputFunc != nil {
+		return m.CombinedOutputFunc()
+	}
+	return nil, nil
+}
 
 func TestGetRunnerInfoReturnsCorrectValueOnWindows(t *testing.T) {
 	const expectedRunner = "cmd.exe"
@@ -89,14 +96,25 @@ func TestNewCommandUsesCallingProcDirectoryWhenNotSpecified(t *testing.T) {
 	}
 }
 
-// func TestRunSetsDirectoryWhenSpecified(t *testing.T) {
-// 	mockCmd := &command{}
-// 	createCommand = func(name string, arg ...string) *exec.Cmd {
-// 		return nil
-// 	}
-// 	defer func() { createCommand = exec.Command }()
-// }
+func TestRunReturnsCorrectResults(t *testing.T) {
+	mockCommand := &MockCommand{}
+	mockBytes := []byte("foobar")
+	var mockErr error
+	mockCommand.CombinedOutputFunc = func() ([]byte, error) {
+		return mockBytes, mockErr
+	}
+	createCommand = func(directory, name string, args ...string) command {
+		return mockCommand
+	}
+	defer func() { createCommand = newCommand }()
 
-func TestRunFoo(t *testing.T) {
-	run("echo foo", "")
+	result, err := run("", "")
+
+	if err != nil {
+		t.Errorf("Err was not nil. Got: %s.", err)
+	}
+
+	if result != string(mockBytes) {
+		t.Errorf("Result from run was incorrect. Expected: %s, but got: %s.", result, string(mockBytes))
+	}
 }
