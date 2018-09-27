@@ -1,7 +1,6 @@
 package captaingithook
 
 import (
-	"fmt"
 	"os/exec"
 	"runtime"
 )
@@ -41,15 +40,7 @@ func run(command string, directory string) (resultOutput string, err error) {
 	cmd := createCommand(directory, runner, runnerArg, command)
 
 	out, err := cmd.CombinedOutput()
-	resultOutput = string(out[:len(out)-1])
-
-	if err != nil {
-		fmt.Printf("Crashed and burned with error %s\n", err)
-		fmt.Printf("Error details: %s\n", resultOutput)
-	} else {
-		fmt.Printf("The output was: %s", resultOutput)
-		// fmt.Printf("The output was: '%s'\n", string(out[:len(out)-1]))
-	}
+	resultOutput = string(out)
 
 	return resultOutput, err
 }

@@ -96,3 +96,7 @@ func TestNewCommandUsesCallingProcDirectoryWhenNotSpecified(t *testing.T) {
 // 	}
 // 	defer func() { createCommand = exec.Command }()
 // }
+
+func TestRunFoo(t *testing.T) {
+	run("echo foo", "")
+}

@@ -24,8 +24,9 @@ const (
 	goLintResultsFile        = testResultsDirectory + "golint.out"
 )
 
-func goGetTool(tool string) {
-	cmd := exec.Command("go", "get", tool)
+func goGetTool(tool ...string) {
+	args := append([]string{"get"}, tool...)
+	cmd := exec.Command("go", args...)
 	cmd.Dir = os.TempDir()
 	out, err := cmd.CombinedOutput()
 	fmt.Printf("%s", string(out))
@@ -38,15 +39,21 @@ func goGetTool(tool string) {
 func installDevTools() {
 	fmt.Println("Installing dev tools...")
 	fmt.Println("Installing go-junit-report...")
-	goGetTool("github.com/jstemmer/go-junit-report")
+	junit := "github.com/jstemmer/go-junit-report"
+	// goGetTool("github.com/jstemmer/go-junit-report")
 	fmt.Println("Installing gocov...")
-	goGetTool("github.com/axw/gocov/gocov")
+	gocov := "github.com/axw/gocov/gocov"
+	// goGetTool("github.com/axw/gocov/gocov")
 	fmt.Println("Installing gocovxml...")
-	goGetTool("github.com/AlekSi/gocov-xml")
+	gocovXml := "github.com/AlekSi/gocov-xml"
+	// goGetTool("github.com/AlekSi/gocov-xml")
 	fmt.Println("Installing gocov-html...")
-	goGetTool("github.com/matm/gocov-html")
+	gocovHtml := "github.com/matm/gocov-html"
+	// goGetTool("github.com/matm/gocov-html")
 	fmt.Println("Installing golangci-lint...")
-	goGetTool("github.com/golangci/golangci-lint/cmd/golangci-lint")
+	golangCiLint := "github.com/golangci/golangci-lint/cmd/golangci-lint"
+	// goGetTool("github.com/golangci/golangci-lint/cmd/golangci-lint")
+	goGetTool(junit, gocov, gocovXml, gocovHtml, golangCiLint)
 }
 
 func createTestOutputDirectories() {
