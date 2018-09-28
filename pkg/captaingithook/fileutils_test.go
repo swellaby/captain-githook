@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestWriteFileDoesNotPanicOnSuccess(t *testing.T) {
+func TestWriteFileUsesCorrectValues(t *testing.T) {
 	var actualFileName string
 	var actualData []byte
 	var actualPerm os.FileMode
@@ -23,7 +23,11 @@ func TestWriteFileDoesNotPanicOnSuccess(t *testing.T) {
 		return nil
 	}
 	defer func() { ioWrite = ioutil.WriteFile }()
-	write(expectedFileName, data)
+	actualErr := write(expectedFileName, data)
+
+	if actualErr != nil {
+		t.Errorf("Got unexpected error %s.", actualErr)
+	}
 
 	if actualFileName != expectedFileName {
 		t.Errorf("Attempted to write to wrong file. Expected: %s, but got: %s.", expectedFileName, actualFileName)

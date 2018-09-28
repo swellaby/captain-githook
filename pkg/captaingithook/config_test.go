@@ -54,9 +54,10 @@ func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
 	defer func() { writeFile = originalWriteFile }()
 	var actualFileName, actualData string
 	expectedData := ""
-	writeFile = func(fileName, data string) {
+	writeFile = func(fileName, data string) error {
 		actualFileName = fileName
 		actualData = data
+		return nil
 	}
 
 	createConfigFile("")
@@ -75,9 +76,10 @@ func TestCreateConfigFileUsesSpecifiedFileName(t *testing.T) {
 	defer func() { writeFile = originalWriteFile }()
 	var actualFileName, actualData string
 	expectedData := ""
-	writeFile = func(fileName, data string) {
+	writeFile = func(fileName, data string) error {
 		actualFileName = fileName
 		actualData = data
+		return nil
 	}
 
 	desiredFileName := ".captain-githookrc"

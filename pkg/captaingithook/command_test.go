@@ -60,17 +60,16 @@ func TestNewCommandUsesDirectoryWhenSpecified(t *testing.T) {
 		mockCmd.Args = append([]string{name}, arg...)
 		return mockCmd
 	}
+	defer func() { osCommand = exec.Command }()
 	name, cmdSwitch := "sh", "-c"
 	arg := []string{ cmdSwitch, "echo", "foobar" }
-	cmd := newCommand(dir, name, arg...)
-	defer func() { osCommand = exec.Command }()
+
+	if newCommand(dir, name, arg...) == nil {
+		t.Errorf("Got a nil exec.Command object.")
+	}
 
 	if mockCmd.Dir != dir {
 		t.Errorf("Target directory for command was incorrect. Expected: %s, but got: %s.", dir, mockCmd.Dir)
-	}
-
-	if cmd == nil {
-		t.Errorf("Got a nil exec.Command object.")
 	}
 }
 
@@ -82,29 +81,26 @@ func TestNewCommandUsesCallingProcDirectoryWhenNotSpecified(t *testing.T) {
 		mockCmd.Args = append([]string{name}, arg...)
 		return mockCmd
 	}
+	defer func() { osCommand = exec.Command }()
+
 	name, cmdSwitch := "sh", "-c"
 	arg := []string{ cmdSwitch, "echo", "foobar" }
-	cmd := newCommand(dir, name, arg...)
-	defer func() { osCommand = exec.Command }()
+
+	if newCommand(dir, name, arg...) == nil {
+		t.Errorf("Got a nil exec.Command object.")
+	}
 
 	if mockCmd.Dir != dir {
 		t.Errorf("Target directory for command was incorrect. Expected: %s, but got: %s.", dir, mockCmd.Dir)
 	}
-
-	if cmd == nil {
-		t.Errorf("Got a nil exec.Command object.")
-	}
 }
 
 func TestRunReturnsCorrectResults(t *testing.T) {
-	mockCommand := &MockCommand{}
 	mockBytes := []byte("foobar")
-	var mockErr error
-	mockCommand.CombinedOutputFunc = func() ([]byte, error) {
-		return mockBytes, mockErr
-	}
 	createCommand = func(directory, name string, args ...string) command {
-		return mockCommand
+		return &MockCommand{ CombinedOutputFunc: func() ([]byte, error) {
+			return mockBytes, nil
+		}}
 	}
 	defer func() { createCommand = newCommand }()
 
