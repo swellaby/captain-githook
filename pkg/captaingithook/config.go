@@ -1,6 +1,8 @@
 package captaingithook
 
-import ()
+import (
+	"path/filepath"
+)
 
 var configFileNames = [...]string{
 	"captaingithook.json",
@@ -17,6 +19,7 @@ var configFileNames = [...]string{
 	".captain-githookrc.json",
 }
 
+
 // Config foo
 type Config struct {
 }
@@ -30,6 +33,16 @@ func isValidConfigFileName(fileName string) bool {
 		}
 	}
 
+	return false
+}
+
+func configFileExists(repoRootDirectoryPath string) bool {
+	for _, configFileName := range configFileNames {
+		configFilePath := filepath.Join(repoRootDirectoryPath, configFileName)
+		if fileExists(configFilePath) {
+			return true
+		}
+	}
 	return false
 }
 
@@ -57,7 +70,7 @@ func getRepoConfig(repoRootDirectoryPath string) *Config {
 	}
 
 	for _, configFileName := range configFileNames {
-		configFilePath := repoRootDirectoryPath + "/" + configFileName
+		configFilePath := filepath.Join(repoRootDirectoryPath, configFileName)
 		readFile(configFilePath)
 	}
 

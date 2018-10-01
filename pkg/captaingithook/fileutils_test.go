@@ -40,5 +40,30 @@ func TestWriteFileUsesCorrectValues(t *testing.T) {
 	if actualPerm != expectedPerm {
 		t.Errorf("Attempted to use wrong perms on file. Expected: %d, but got: %d.", expectedPerm, actualPerm)
 	}
+}
 
+func TestFileExistsReturnsFalseWhenErrorIsOsNotExist(t *testing.T) {
+	osStat = func(file string) (os.FileInfo, error){ return nil, nil }
+	defer func() { osStat = os.Stat }()
+	osIsNotExist = func(err error) bool { return true }
+	defer func() { osIsNotExist = os.IsNotExist }()
+
+	foundFile := exists("/usr/foo/repos/my-repo/captaingithook.json")
+
+	if foundFile {
+		t.Errorf("Got incorrect result for file existence. Expected: %t, but got: %t", false, foundFile)
+	}
+}
+
+func TestFileExistsReturnsTrueWhenErrorIsNotOsNotExist(t *testing.T) {
+	osStat = func(file string) (os.FileInfo, error){ return nil, nil }
+	defer func() { osStat = os.Stat }()
+	osIsNotExist = func(err error) bool { return false }
+	defer func() { osIsNotExist = os.IsNotExist }()
+
+	foundFile := exists("/usr/foo/repos/my-repo/captaingithook.json")
+
+	if !foundFile {
+		t.Errorf("Got incorrect result for file existence. Expected: %t, but got: %t", true, foundFile)
+	}
 }

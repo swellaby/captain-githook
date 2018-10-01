@@ -49,6 +49,28 @@ func TestIsValidConfigFileNameReturnsTrueOnValidNames(t *testing.T) {
 	}
 }
 
+func TestConfigFileExistsReturnsFalseWhenNoFilesFound(t *testing.T) {
+	origFileExists := fileExists
+	fileExists = func(string) bool { return false }
+	defer func() { fileExists = origFileExists }()
+	foundFile := configFileExists("")
+
+	if foundFile {
+		t.Errorf("Got wrong result for found config file. Expected %t, but got %t", false, foundFile)
+	}
+}
+
+func TestConfigFileExistsReturnsTrueWhenFileFound(t *testing.T) {
+	origFileExists := fileExists
+	fileExists = func(string) bool { return true }
+	defer func() { fileExists = origFileExists }()
+	foundFile := configFileExists("")
+
+	if !foundFile {
+		t.Errorf("Got wrong result for found config file. Expected %t, but got %t", true, foundFile)
+	}
+}
+
 func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
 	originalWriteFile := writeFile
 	defer func() { writeFile = originalWriteFile }()
