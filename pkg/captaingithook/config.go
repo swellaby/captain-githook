@@ -1,6 +1,7 @@
 package captaingithook
 
 import (
+	"errors"
 	"path/filepath"
 )
 
@@ -19,6 +20,8 @@ var configFileNames = [...]string{
 	".captain-githookrc.json",
 }
 
+var errConfigFileSearch = errors.New("encountered a fatal error while checking for existing config files")
+
 
 // Config foo
 type Config struct {
@@ -36,9 +39,14 @@ func isValidConfigFileName(fileName string) bool {
 	return false
 }
 
-func configFileExists(repoRootDirectoryPath string) bool {
+func configFileExists() bool {
+	path, err := getGitRepoRootDirectoryPath()
+	if err != nil {
+		panic(err)
+	}
+
 	for _, configFileName := range configFileNames {
-		configFilePath := filepath.Join(repoRootDirectoryPath, configFileName)
+		configFilePath := filepath.Join(path, configFileName)
 		if fileExists(configFilePath) {
 			return true
 		}
@@ -46,7 +54,7 @@ func configFileExists(repoRootDirectoryPath string) bool {
 	return false
 }
 
-func createConfigFile(desiredFileName string) error {
+func createConfigFile(desiredFileName string) (err error) {
 	configFileName := ""
 
 	if isValidConfigFileName(desiredFileName) {
@@ -55,24 +63,31 @@ func createConfigFile(desiredFileName string) error {
 		configFileName = configFileNames[0]
 	}
 
-	writeFile(configFileName, "")
+	defer func() {
+		if r := recover(); r != nil {
+			err = errConfigFileSearch
+		}
+	}()
 
-	return nil
+	foundFile := configFileExists()
+
+	if !foundFile {
+		err = writeFile(configFileName, "")
+	}
+
+	return
 }
 
-func getRepoConfig(repoRootDirectoryPath string) *Config {
-	if len(repoRootDirectoryPath) < 1 {
-		path, err := getGitRepoRootDirectoryPath()
-		if err != nil {
-			return nil
-		}
-		repoRootDirectoryPath = path
+func getRepoConfig() (config *Config, err error) {
+	path, err := getGitRepoRootDirectoryPath()
+	if err != nil {
+		return nil, err
 	}
 
 	for _, configFileName := range configFileNames {
-		configFilePath := filepath.Join(repoRootDirectoryPath, configFileName)
+		configFilePath := filepath.Join(path, configFileName)
 		readFile(configFilePath)
 	}
 
-	return nil
+	return nil, nil
 }

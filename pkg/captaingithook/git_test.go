@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGetGitRepoRootDirectoryPathHandlesErrorCorrectly(t *testing.T) {
+func TestGetRootDirectoryPathHandlesErrorCorrectly(t *testing.T) {
 	errMsgDetails := "not a git repo"
 	expectedErrMsg := "unexpected error encountered while trying to determine the git repo root directory. Error details: " + errMsgDetails
 	origRunCommand := runCommand
@@ -14,7 +14,7 @@ func TestGetGitRepoRootDirectoryPathHandlesErrorCorrectly(t *testing.T) {
 	}
 	defer func() { runCommand = origRunCommand }()
 
-	_, err := getGitRepoRootDirectoryPath()
+	_, err := getRootDirectoryPath()
 
 	if err == nil {
 		t.Errorf("Expected error but got nil")
@@ -25,7 +25,7 @@ func TestGetGitRepoRootDirectoryPathHandlesErrorCorrectly(t *testing.T) {
 	}
 }
 
-func TestGetGitRepoRootDirectoryPathHandlesEmptyDirectoryCorrectly(t *testing.T) {
+func TestGetRootDirectoryPathHandlesEmptyDirectoryCorrectly(t *testing.T) {
 	expectedErrMsg := "got an unexpected result for the git repo root directory."
 	origRunCommand := runCommand
 	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
@@ -33,7 +33,7 @@ func TestGetGitRepoRootDirectoryPathHandlesEmptyDirectoryCorrectly(t *testing.T)
 	}
 	defer func() { runCommand = origRunCommand }()
 
-	gitDir, err := getGitRepoRootDirectoryPath()
+	gitDir, err := getRootDirectoryPath()
 
 	if err == nil {
 		t.Errorf("Expected error but got nil")

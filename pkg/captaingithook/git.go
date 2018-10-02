@@ -5,7 +5,10 @@ import (
 	"strings"
 )
 
-func getGitRepoRootDirectoryPath() (gitDirPath string, err error) {
+var getGitRepoRootDirectoryPath = getRootDirectoryPath
+var getGitRepoHooksDirectoryPath = getHooksDirectoryPath
+
+func getRootDirectoryPath() (gitDirPath string, err error) {
 	result, err := runCommand("git", "rev-parse", "--show-toplevel")
 	if err != nil {
 		baseErr := err.Error()
@@ -19,6 +22,6 @@ func getGitRepoRootDirectoryPath() (gitDirPath string, err error) {
 	return gitDirPath, err
 }
 
-func getGitRepoHooksDirectoryPath() (string, error) {
+func getHooksDirectoryPath() (string, error) {
 	return "", nil
 }
