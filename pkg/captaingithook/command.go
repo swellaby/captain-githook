@@ -42,7 +42,7 @@ func run(command string, commandArgs ...string) (resultOutput string, err error)
 	return runInDir("", command, commandArgs...)
 }
 
-func runInDir(directory, command string, commandArgs...string) (resultOutput string, err error) {
+func runInDir(directory, command string, commandArgs ...string) (resultOutput string, err error) {
 	cmd := createCommand(directory, command, commandArgs...)
 
 	out, err := cmd.CombinedOutput()

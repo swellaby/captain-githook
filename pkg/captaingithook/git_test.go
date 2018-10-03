@@ -69,7 +69,7 @@ func TestGetGitRepoRootDirectoryPathReturnsDirectoryCorrectly(t *testing.T) {
 
 func TestGetGitRepoRootDirectoryUsesCorrectCommand(t *testing.T) {
 	expectedCmd := "git"
-	expectedCmdArgs := []string{ "rev-parse", "--show-toplevel" }
+	expectedCmdArgs := []string{"rev-parse", "--show-toplevel"}
 	var actualCmd string
 	var actualCmdArgs []string
 	origRunCommand := runCommand

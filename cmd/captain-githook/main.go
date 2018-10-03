@@ -1,8 +1,8 @@
 package main
 
 import (
-	"os/exec"
 	"fmt"
+	"os/exec"
 	"runtime"
 	// "github.com/swellaby/captain-githook/pkg/captaingithook"
 )

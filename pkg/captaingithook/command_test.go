@@ -6,10 +6,10 @@ import (
 )
 
 type MockCommand struct {
-	CombinedOutputFunc func()([]byte, error)
+	CombinedOutputFunc func() ([]byte, error)
 }
 
-func (m MockCommand) CombinedOutput()([]byte, error) {
+func (m MockCommand) CombinedOutput() ([]byte, error) {
 	if m.CombinedOutputFunc != nil {
 		return m.CombinedOutputFunc()
 	}
@@ -62,7 +62,7 @@ func TestNewCommandUsesDirectoryWhenSpecified(t *testing.T) {
 	}
 	defer func() { osCommand = exec.Command }()
 	name, cmdSwitch := "sh", "-c"
-	arg := []string{ cmdSwitch, "echo", "foobar" }
+	arg := []string{cmdSwitch, "echo", "foobar"}
 
 	if newCommand(dir, name, arg...) == nil {
 		t.Errorf("Got a nil exec.Command object.")
@@ -84,7 +84,7 @@ func TestNewCommandUsesCallingProcDirectoryWhenNotSpecified(t *testing.T) {
 	defer func() { osCommand = exec.Command }()
 
 	name, cmdSwitch := "sh", "-c"
-	arg := []string{ cmdSwitch, "echo", "foobar" }
+	arg := []string{cmdSwitch, "echo", "foobar"}
 
 	if newCommand(dir, name, arg...) == nil {
 		t.Errorf("Got a nil exec.Command object.")
@@ -98,7 +98,7 @@ func TestNewCommandUsesCallingProcDirectoryWhenNotSpecified(t *testing.T) {
 func TestRunReturnsCorrectResults(t *testing.T) {
 	mockBytes := []byte("foobar")
 	createCommand = func(directory, name string, args ...string) command {
-		return &MockCommand{ CombinedOutputFunc: func() ([]byte, error) {
+		return &MockCommand{CombinedOutputFunc: func() ([]byte, error) {
 			return mockBytes, nil
 		}}
 	}
