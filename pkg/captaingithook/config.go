@@ -1,9 +1,12 @@
 package captaingithook
 
 import (
+	"encoding/json"
 	"errors"
 	"path/filepath"
 )
+
+var jsonMarshallIndent = json.MarshalIndent
 
 var configFileNames = [...]string{
 	"captaingithook.json",
@@ -22,9 +25,16 @@ var configFileNames = [...]string{
 
 var errConfigFileSearch = errors.New("encountered a fatal error while checking for existing config files")
 
-
 // Config foo
 type Config struct {
+	Hooks HooksConfig `json:"hooks,omitempty"`
+}
+
+// HooksConfig bar
+type HooksConfig struct {
+	PreCommit string `json:"pre-commit,omitempty"`
+	PrePush   string `json:"pre-push,omitempty"`
+	CommitMsg string `json:"commit-msg,omitempty"`
 }
 
 func isValidConfigFileName(fileName string) bool {
@@ -37,6 +47,14 @@ func isValidConfigFileName(fileName string) bool {
 	}
 
 	return false
+}
+
+func getDefaultConfigJSONContent() ([]byte, error) {
+	hooksConfig := &HooksConfig{
+		PreCommit: "go test ./...",
+	}
+	config := &Config{Hooks: *hooksConfig}
+	return jsonMarshallIndent(config, "", "  ")
 }
 
 func configFileExists() bool {
@@ -72,7 +90,8 @@ func createConfigFile(desiredFileName string) (err error) {
 	foundFile := configFileExists()
 
 	if !foundFile {
-		err = writeFile(configFileName, "")
+		data, _ := getDefaultConfigJSONContent()
+		err = writeFile(configFileName, data)
 	}
 
 	return

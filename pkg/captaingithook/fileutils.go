@@ -13,8 +13,8 @@ var fileExists = exists
 var osStat = os.Stat
 var osIsNotExist = os.IsNotExist
 
-func write(filePath, contents string) error {
-	return ioWrite(filePath, []byte(contents), os.ModePerm)
+func write(filePath string, contents []byte) error {
+	return ioWrite(filePath, contents, os.ModePerm)
 }
 
 func read(filePath string) ([]byte, error) {

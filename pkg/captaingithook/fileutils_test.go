@@ -13,7 +13,7 @@ func TestWriteFileUsesCorrectValues(t *testing.T) {
 	var actualPerm os.FileMode
 	expectedPerm := os.ModePerm
 	expectedFileName := "/usr/foo/bar.txt"
-	data := "foobaroo"
+	data := []byte("foobaroo")
 	expectedData := []byte(data)
 
 	ioWrite = func(filename string, data []byte, perm os.FileMode) error {
@@ -43,7 +43,7 @@ func TestWriteFileUsesCorrectValues(t *testing.T) {
 }
 
 func TestFileExistsReturnsFalseWhenErrorIsOsNotExist(t *testing.T) {
-	osStat = func(file string) (os.FileInfo, error){ return nil, nil }
+	osStat = func(file string) (os.FileInfo, error) { return nil, nil }
 	defer func() { osStat = os.Stat }()
 	osIsNotExist = func(err error) bool { return true }
 	defer func() { osIsNotExist = os.IsNotExist }()
@@ -56,7 +56,7 @@ func TestFileExistsReturnsFalseWhenErrorIsOsNotExist(t *testing.T) {
 }
 
 func TestFileExistsReturnsTrueWhenErrorIsNotOsNotExist(t *testing.T) {
-	osStat = func(file string) (os.FileInfo, error){ return nil, nil }
+	osStat = func(file string) (os.FileInfo, error) { return nil, nil }
 	defer func() { osStat = os.Stat }()
 	osIsNotExist = func(err error) bool { return false }
 	defer func() { osIsNotExist = os.IsNotExist }()

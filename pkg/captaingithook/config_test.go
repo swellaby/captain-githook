@@ -1,11 +1,23 @@
 package captaingithook
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"testing"
 )
 
 const defaultConfigFileName = "captaingithook.json"
+
+var hooksConfig = &HooksConfig{
+	PreCommit: "go test ./...",
+}
+var config = &Config{Hooks: *hooksConfig}
+
+func getDefaultJSON() []byte {
+	data, _ := json.MarshalIndent(config, "", "  ")
+	return data
+}
 
 func TestIsValidConfigFileNameReturnsFalseOnInvalidName(t *testing.T) {
 	fileName := "captaingithook.yml"
@@ -87,8 +99,8 @@ func TestConfigFileExistsPanicsWhenRepoRootNotErrors(t *testing.T) {
 	defer func() {
 		r := recover()
 
-        if r == nil {
-            t.Errorf("The code did not panic")
+		if r == nil {
+			t.Errorf("The code did not panic")
 		}
 
 		if r != err {
@@ -107,9 +119,10 @@ func TestConfigFileExistsPanicsWhenRepoRootNotErrors(t *testing.T) {
 func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
 	originalWriteFile := writeFile
 	defer func() { writeFile = originalWriteFile }()
-	var actualFileName, actualData string
-	expectedData := ""
-	writeFile = func(fileName, data string) error {
+	var actualFileName string
+	var actualData []byte
+	expectedData := getDefaultJSON()
+	writeFile = func(fileName string, data []byte) error {
 		actualFileName = fileName
 		actualData = data
 		return nil
@@ -126,7 +139,7 @@ func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
 		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
 	}
 
-	if actualData != expectedData {
+	if !bytes.Equal(actualData, expectedData) {
 		t.Errorf("Attempted to create wrong config file contents. Expected: %s, but got: %s.", expectedData, actualData)
 	}
 }
@@ -134,9 +147,10 @@ func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
 func TestCreateConfigFileUsesSpecifiedFileName(t *testing.T) {
 	originalWriteFile := writeFile
 	defer func() { writeFile = originalWriteFile }()
-	var actualFileName, actualData string
-	expectedData := ""
-	writeFile = func(fileName, data string) error {
+	var actualFileName string
+	var actualData []byte
+	expectedData := getDefaultJSON()
+	writeFile = func(fileName string, data []byte) error {
 		actualFileName = fileName
 		actualData = data
 		return nil
@@ -155,7 +169,7 @@ func TestCreateConfigFileUsesSpecifiedFileName(t *testing.T) {
 		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
 	}
 
-	if actualData != expectedData {
+	if !bytes.Equal(actualData, expectedData) {
 		t.Errorf("Attempted to create wrong config file contents. Expected: %s, but got: %s.", expectedData, actualData)
 	}
 }
@@ -163,7 +177,7 @@ func TestCreateConfigFileUsesSpecifiedFileName(t *testing.T) {
 func TestCreateConfigFileReturnsErrorWhenConfigFileCheckPanics(t *testing.T) {
 	origGetRepoRoot := getGitRepoRootDirectoryPath
 	getGitRepoRootDirectoryPath = func() (string, error) {
-		return "", 	errors.New("oh no")
+		return "", errors.New("oh no")
 	}
 	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
 	err := createConfigFile(".captaingithookrc.json")
@@ -175,5 +189,18 @@ func TestCreateConfigFileReturnsErrorWhenConfigFileCheckPanics(t *testing.T) {
 	expErrMsg := "encountered a fatal error while checking for existing config files"
 	if err.Error() != expErrMsg {
 		t.Errorf("Got wrong error message. Expected: %s, but got: %s.", expErrMsg, err.Error())
+	}
+}
+
+func TestGetDefaultConfigJSONContentReturnsCorrectValues(t *testing.T) {
+	expectedJSONContent := getDefaultJSON()
+	actualJSONContent, err := getDefaultConfigJSONContent()
+
+	if err != nil {
+		t.Errorf("Error should have been nil but was not. Error was: %s", err)
+	}
+
+	if !bytes.Equal(expectedJSONContent, actualJSONContent) {
+		t.Errorf("Did not get correct JSON data for default config object. Expected: %s, but got: %s", string(expectedJSONContent), string(actualJSONContent))
 	}
 }
