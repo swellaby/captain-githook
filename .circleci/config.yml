@@ -9,8 +9,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: bootstrap repo
-          command: go run bootstrap.go
+          name: setup repo
+          command: go run ./scripts/setup.go
       - run: mage test
 
       - run:
