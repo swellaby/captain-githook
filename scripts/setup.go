@@ -1,5 +1,3 @@
-// +build mage,vscode
-
 package main
 
 import (
@@ -7,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"runtime"
 )
 
@@ -27,7 +26,7 @@ func installMage() {
 func runMageSetupTarget() {
 	cmd := exec.Command("mage", "setup")
 	_, currentFilePath, _, _ := runtime.Caller(0)
-	cmd.Dir = path.Dir(currentFilePath)
+	cmd.Dir = filepath.Join(path.Dir(currentFilePath), "..")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Printf("Error encountered while running `mage setup`. Error details: %s\n", err)

@@ -6,7 +6,7 @@ branches:
     - master
 
 cache:
-  - c:\users\appveyor\go -> magefile.go, mage.go, mage.sum
+  - c:\users\appveyor\go -> magefile.go, go.mod, go.sum
 
 install:
   - ps: $env:GOBIN = "$(go env GOPATH)\bin"

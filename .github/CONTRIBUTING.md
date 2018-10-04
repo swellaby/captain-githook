@@ -18,7 +18,7 @@ Clone the repo, change into the directory where you cloned the repo, and then ru
 ```sh     
 git clone https://github.com/swellaby/captain-githook.git
 cd captain-githook 
-go run bootstrap.go
+go run ./scripts/setup.go
 ```
 
 ### Testing
