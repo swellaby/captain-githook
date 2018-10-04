@@ -7,6 +7,7 @@ import (
 )
 
 var jsonMarshallIndent = json.MarshalIndent
+var initializeCaptainGithookConfigFile = initConfigFile
 
 var configFileNames = [...]string{
 	"captaingithook.json",
@@ -23,7 +24,7 @@ var configFileNames = [...]string{
 	".captain-githookrc.json",
 }
 
-var errConfigFileSearch = errors.New("encountered a fatal error while checking for existing config files")
+var errFailedToFindGitRepo = errors.New("encountered a fatal error while trying to determine the root directory of the git repo")
 
 // Config foo
 type Config struct {
@@ -57,12 +58,7 @@ func getDefaultConfigJSONContent() ([]byte, error) {
 	return jsonMarshallIndent(config, "", "  ")
 }
 
-func configFileExists() bool {
-	path, err := getGitRepoRootDirectoryPath()
-	if err != nil {
-		panic(err)
-	}
-
+func configFileExists(path string) bool {
 	for _, configFileName := range configFileNames {
 		configFilePath := filepath.Join(path, configFileName)
 		if fileExists(configFilePath) {
@@ -72,7 +68,7 @@ func configFileExists() bool {
 	return false
 }
 
-func createConfigFile(desiredFileName string) (err error) {
+func getConfigFileName(desiredFileName string) string {
 	configFileName := ""
 
 	if isValidConfigFileName(desiredFileName) {
@@ -81,26 +77,30 @@ func createConfigFile(desiredFileName string) (err error) {
 		configFileName = configFileNames[0]
 	}
 
-	defer func() {
-		if r := recover(); r != nil {
-			err = errConfigFileSearch
-		}
-	}()
+	return configFileName
+}
 
-	foundFile := configFileExists()
+func initConfigFile(desiredFileName string) error {
+	configFileName := getConfigFileName(desiredFileName)
 
-	if !foundFile {
-		data, _ := getDefaultConfigJSONContent()
-		err = writeFile(configFileName, data)
+	path, err := getGitRepoRootDirectoryPath()
+	if err != nil {
+		return errFailedToFindGitRepo
 	}
 
-	return
+	if !configFileExists(path) {
+		data, _ := getDefaultConfigJSONContent()
+		configFilePath := filepath.Join(path, configFileName)
+		err = writeFile(configFilePath, data)
+	}
+
+	return nil
 }
 
 func getRepoConfig() (config *Config, err error) {
 	path, err := getGitRepoRootDirectoryPath()
 	if err != nil {
-		return nil, err
+		return nil, errFailedToFindGitRepo
 	}
 
 	for _, configFileName := range configFileNames {

@@ -71,7 +71,7 @@ func TestConfigFileExistsReturnsFalseWhenNoFilesFound(t *testing.T) {
 		return "", nil
 	}
 	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
-	foundFile := configFileExists()
+	foundFile := configFileExists("")
 
 	if foundFile {
 		t.Errorf("Got wrong result for found config file. Expected %t, but got %t", false, foundFile)
@@ -87,36 +87,14 @@ func TestConfigFileExistsReturnsTrueWhenFileFound(t *testing.T) {
 		return "", nil
 	}
 	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
-	foundFile := configFileExists()
+	foundFile := configFileExists("")
 
 	if !foundFile {
 		t.Errorf("Got wrong result for found config file. Expected %t, but got %t", true, foundFile)
 	}
 }
 
-func TestConfigFileExistsPanicsWhenRepoRootNotErrors(t *testing.T) {
-	err := errors.New("crashed")
-	defer func() {
-		r := recover()
-
-		if r == nil {
-			t.Errorf("The code did not panic")
-		}
-
-		if r != err {
-			t.Errorf("Got wrong panic error. Expected %s, but got %s.", err, r)
-		}
-	}()
-
-	origGetRepoRoot := getGitRepoRootDirectoryPath
-	getGitRepoRootDirectoryPath = func() (string, error) {
-		return "", err
-	}
-	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
-	configFileExists()
-}
-
-func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
+func TestInitConfigFileUsesCorrectDefault(t *testing.T) {
 	originalWriteFile := writeFile
 	defer func() { writeFile = originalWriteFile }()
 	var actualFileName string
@@ -133,7 +111,7 @@ func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
 	}
 	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
 
-	createConfigFile("")
+	initConfigFile("")
 
 	if actualFileName != defaultConfigFileName {
 		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
@@ -144,7 +122,7 @@ func TestCreateConfigFileUsesCorrectDefault(t *testing.T) {
 	}
 }
 
-func TestCreateConfigFileUsesSpecifiedFileName(t *testing.T) {
+func TestInitConfigFileUsesSpecifiedFileName(t *testing.T) {
 	originalWriteFile := writeFile
 	defer func() { writeFile = originalWriteFile }()
 	var actualFileName string
@@ -163,7 +141,7 @@ func TestCreateConfigFileUsesSpecifiedFileName(t *testing.T) {
 
 	desiredFileName := ".captain-githookrc"
 
-	createConfigFile(desiredFileName)
+	initConfigFile(desiredFileName)
 
 	if actualFileName != desiredFileName {
 		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
@@ -174,19 +152,19 @@ func TestCreateConfigFileUsesSpecifiedFileName(t *testing.T) {
 	}
 }
 
-func TestCreateConfigFileReturnsErrorWhenConfigFileCheckPanics(t *testing.T) {
+func TestInitConfigFileReturnsCorrectErrorWhenGitRootNotFound(t *testing.T) {
 	origGetRepoRoot := getGitRepoRootDirectoryPath
 	getGitRepoRootDirectoryPath = func() (string, error) {
 		return "", errors.New("oh no")
 	}
 	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
-	err := createConfigFile(".captaingithookrc.json")
+	err := initConfigFile(".captaingithookrc.json")
 
-	if err != errConfigFileSearch {
-		t.Errorf("Did not get expected error. Expected: %s, but got: %s.", errConfigFileSearch, err)
+	if err != errFailedToFindGitRepo {
+		t.Errorf("Did not get expected error. Expected: %s, but got: %s.", errFailedToFindGitRepo, err)
 	}
 
-	expErrMsg := "encountered a fatal error while checking for existing config files"
+	expErrMsg := "encountered a fatal error while trying to determine the root directory of the git repo"
 	if err.Error() != expErrMsg {
 		t.Errorf("Got wrong error message. Expected: %s, but got: %s.", expErrMsg, err.Error())
 	}

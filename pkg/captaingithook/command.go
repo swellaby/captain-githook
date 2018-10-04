@@ -28,8 +28,8 @@ func getRunnerInfo(operatingSystem string) (runner, runnerArg string) {
 
 func newCommand(directory, cmdName string, args ...string) command {
 	runner, runnerArg := getRunnerInfo(runtime.GOOS)
-	cmdArgs := append([]string{runner, runnerArg}, args...)
-	cmd := osCommand(cmdName, cmdArgs...)
+	cmdArgs := append([]string{runnerArg, cmdName}, args...)
+	cmd := osCommand(runner, cmdArgs...)
 
 	if len(directory) > 0 {
 		cmd.Dir = directory
