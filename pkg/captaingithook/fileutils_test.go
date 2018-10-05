@@ -42,6 +42,31 @@ func TestWriteFileUsesCorrectValues(t *testing.T) {
 	}
 }
 
+func TestReadFileUsesCorrectValues(t *testing.T) {
+	var actualFilePath string
+	expectedFilePath := "/usr/foo/bar.txt"
+	expectedData := []byte("foobaroo")
+
+	ioRead = func(filepath string) ([]byte, error) {
+		actualFilePath = filepath
+		return expectedData, nil
+	}
+	defer func() { ioRead = ioutil.ReadFile }()
+	data, err := read(expectedFilePath)
+
+	if err != nil {
+		t.Errorf("Got unexpected error %s.", err)
+	}
+
+	if actualFilePath != expectedFilePath {
+		t.Errorf("Attempted to write to wrong file. Expected: %s, but got: %s.", expectedFilePath, actualFilePath)
+	}
+
+	if !bytes.Equal(data, expectedData) {
+		t.Errorf("Did not get correct file data. Expected: %s, but got: %s.", expectedData, data)
+	}
+}
+
 func TestFileExistsReturnsFalseWhenErrorIsOsNotExist(t *testing.T) {
 	osStat = func(file string) (os.FileInfo, error) { return nil, nil }
 	defer func() { osStat = os.Stat }()

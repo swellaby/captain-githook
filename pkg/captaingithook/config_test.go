@@ -105,13 +105,8 @@ func TestInitConfigFileUsesCorrectDefault(t *testing.T) {
 		actualData = data
 		return nil
 	}
-	origGetRepoRoot := getGitRepoRootDirectoryPath
-	getGitRepoRootDirectoryPath = func() (string, error) {
-		return "", nil
-	}
-	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
 
-	initConfigFile("")
+	initConfigFile("", "")
 
 	if actualFileName != defaultConfigFileName {
 		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
@@ -133,15 +128,10 @@ func TestInitConfigFileUsesSpecifiedFileName(t *testing.T) {
 		actualData = data
 		return nil
 	}
-	origGetRepoRoot := getGitRepoRootDirectoryPath
-	getGitRepoRootDirectoryPath = func() (string, error) {
-		return "", nil
-	}
-	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
 
 	desiredFileName := ".captain-githookrc"
 
-	initConfigFile(desiredFileName)
+	initConfigFile("", desiredFileName)
 
 	if actualFileName != desiredFileName {
 		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
@@ -152,21 +142,18 @@ func TestInitConfigFileUsesSpecifiedFileName(t *testing.T) {
 	}
 }
 
-func TestInitConfigFileReturnsCorrectErrorWhenGitRootNotFound(t *testing.T) {
-	origGetRepoRoot := getGitRepoRootDirectoryPath
-	getGitRepoRootDirectoryPath = func() (string, error) {
-		return "", errors.New("oh no")
-	}
-	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
-	err := initConfigFile(".captaingithookrc.json")
-
-	if err != errFailedToFindGitRepo {
-		t.Errorf("Did not get expected error. Expected: %s, but got: %s.", errFailedToFindGitRepo, err)
+func TestInitConfigFileReturnsCorrectErrorOnWriteError(t *testing.T) {
+	originalWriteFile := writeFile
+	defer func() { writeFile = originalWriteFile }()
+	errMsgDetails := "ouch"
+	expectedErrMsg := "unexpected error encountered while trying to create the config file. Error details: " + errMsgDetails
+	writeFile = func(fileName string, data []byte) error {
+		return errors.New(errMsgDetails)
 	}
 
-	expErrMsg := "encountered a fatal error while trying to determine the root directory of the git repo"
-	if err.Error() != expErrMsg {
-		t.Errorf("Got wrong error message. Expected: %s, but got: %s.", expErrMsg, err.Error())
+	err := initConfigFile("", ".captaingithookrc.json")
+	if err.Error() != expectedErrMsg {
+		t.Errorf("Got wrong error message. Expected: %s, but got: %s.", expectedErrMsg, err.Error())
 	}
 }
 
@@ -180,5 +167,17 @@ func TestGetDefaultConfigJSONContentReturnsCorrectValues(t *testing.T) {
 
 	if !bytes.Equal(expectedJSONContent, actualJSONContent) {
 		t.Errorf("Did not get correct JSON data for default config object. Expected: %s, but got: %s", string(expectedJSONContent), string(actualJSONContent))
+	}
+}
+
+func TestGetRepoConfig(t *testing.T) {
+	config, err := getRepoConfig()
+
+	if config != nil {
+		t.Errorf("Config was not nil. Config was: %v", config)
+	}
+
+	if err != nil {
+		t.Errorf("Error was not nil. Error was: %s", err)
 	}
 }

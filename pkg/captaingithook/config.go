@@ -24,7 +24,7 @@ var configFileNames = [...]string{
 	".captain-githookrc.json",
 }
 
-var errFailedToFindGitRepo = errors.New("encountered a fatal error while trying to determine the root directory of the git repo")
+// var errFailedToFindGitRepo = errors.New("encountered a fatal error while trying to determine the root directory of the git repo")
 
 // Config foo
 type Config struct {
@@ -80,33 +80,33 @@ func getConfigFileName(desiredFileName string) string {
 	return configFileName
 }
 
-func initConfigFile(desiredFileName string) error {
-	configFileName := getConfigFileName(desiredFileName)
-
-	path, err := getGitRepoRootDirectoryPath()
-	if err != nil {
-		return errFailedToFindGitRepo
-	}
-
-	if !configFileExists(path) {
+func initConfigFile(repoPath, desiredFileName string) error {
+	if !configFileExists(repoPath) {
+		configFileName := getConfigFileName(desiredFileName)
 		data, _ := getDefaultConfigJSONContent()
-		configFilePath := filepath.Join(path, configFileName)
-		err = writeFile(configFilePath, data)
+		configFilePath := filepath.Join(repoPath, configFileName)
+		err := writeFile(configFilePath, data)
+
+		if err != nil {
+			baseErr := err.Error()
+			errMsg := "unexpected error encountered while trying to create the config file. Error details: " + baseErr
+			return errors.New(errMsg)
+		}
 	}
 
 	return nil
 }
 
 func getRepoConfig() (config *Config, err error) {
-	path, err := getGitRepoRootDirectoryPath()
-	if err != nil {
-		return nil, errFailedToFindGitRepo
-	}
+	// path, err := getGitRepoRootDirectoryPath()
+	// if err != nil {
+	// 	return nil, errFailedToFindGitRepo
+	// }
 
-	for _, configFileName := range configFileNames {
-		configFilePath := filepath.Join(path, configFileName)
-		readFile(configFilePath)
-	}
+	// for _, configFileName := range configFileNames {
+	// 	configFilePath := filepath.Join(path, configFileName)
+	// 	readFile(configFilePath)
+	// }
 
 	return nil, nil
 }

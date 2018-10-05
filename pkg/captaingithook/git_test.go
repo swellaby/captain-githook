@@ -100,3 +100,61 @@ func TestGetGitRepoRootDirectoryUsesCorrectCommand(t *testing.T) {
 		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[1], actualCmdArgs[1])
 	}
 }
+
+func TestGetHooksDirectoryReturnsErrorWhenCommandFails(t *testing.T) {
+	errMsgDetails := "ouch"
+	expectedErrMsg := "unexpected error encountered while trying to determine the git repo hooks directory. Error details: " + errMsgDetails
+	origRunCommand := runCommand
+	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
+		return "", errors.New(errMsgDetails)
+	}
+	defer func() { runCommand = origRunCommand }()
+
+	_, err := getHooksDirectory()
+
+	if err == nil {
+		t.Errorf("Expected error but got nil")
+	}
+
+	if actualErrMsg := err.Error(); actualErrMsg != expectedErrMsg {
+		t.Errorf("Incorrect error message. Expected: %s, but got: %s", expectedErrMsg, actualErrMsg)
+	}
+}
+
+func TestGetHooksDirectoryUsesCorrectCommand(t *testing.T) {
+	expectedCmd := "git"
+	expectedCmdArgs := []string{"rev-parse", "--git-path", "hooks"}
+	var actualCmd string
+	var actualCmdArgs []string
+	origRunCommand := runCommand
+	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
+		actualCmd = cmd
+		actualCmdArgs = cmdArgs
+		return "", nil
+	}
+	defer func() { runCommand = origRunCommand }()
+	getHooksDirectory()
+
+	if actualCmd != expectedCmd {
+		t.Errorf("Used incorrect command. Expected: %s, but got: %s", expectedCmd, actualCmd)
+	}
+
+	aCount := len(actualCmdArgs)
+	eCount := len(expectedCmdArgs)
+
+	if aCount != eCount {
+		t.Errorf("Used incorrect number of commandArgs. Expected: %d, but got: %d", eCount, aCount)
+	}
+
+	if actualCmdArgs[0] != expectedCmdArgs[0] {
+		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[0], actualCmdArgs[0])
+	}
+
+	if actualCmdArgs[1] != expectedCmdArgs[1] {
+		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[1], actualCmdArgs[1])
+	}
+
+	if actualCmdArgs[2] != expectedCmdArgs[2] {
+		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[2], actualCmdArgs[2])
+	}
+}
