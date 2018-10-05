@@ -41,11 +41,17 @@ func TestInitializeReturnsCorrectErrorOnFailedConfigCreation(t *testing.T) {
 }
 
 func TestInitializeCorrectlyAddsConfigAndHookFiles(t *testing.T) {
+	origGitFunc := getGitRepoRootDirectoryPath
+	defer func() { getGitRepoRootDirectoryPath = origGitFunc }()
+	getGitRepoRootDirectoryPath = func() (string, error) {
+		return "", nil
+	}
 	origFunc := initializeCaptainGithookConfigFile
 	defer func() { initializeCaptainGithookConfigFile = origFunc }()
 	initializeCaptainGithookConfigFile = func(path, fileName string) error {
 		return nil
 	}
+
 	err := Initialize()
 
 	if err != nil {
@@ -89,6 +95,11 @@ func TestInitializeWithFileNameReturnsCorrectErrorOnFailedConfigCreation(t *test
 }
 
 func TestInitializeWithFileNameCorrectlyAddsConfigAndHookFiles(t *testing.T) {
+	origGitFunc := getGitRepoRootDirectoryPath
+	defer func() { getGitRepoRootDirectoryPath = origGitFunc }()
+	getGitRepoRootDirectoryPath = func() (string, error) {
+		return "", nil
+	}
 	origFunc := initializeCaptainGithookConfigFile
 	defer func() { initializeCaptainGithookConfigFile = origFunc }()
 	actualFileName := ""
