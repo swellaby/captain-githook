@@ -1,8 +1,12 @@
 package captaingithook
 
 import (
+	"errors"
+	"fmt"
 	"path/filepath"
 )
+
+var initializeGitHookFiles = createAllHookFiles
 
 var gitHooks = [...]string{
 	"applypatch-msg",
@@ -41,11 +45,28 @@ else
 fi`
 
 var hookFileContents = []byte(hookFileScript)
+var errInvalidGitHooksDirectoryPath = errors.New("invalid git hooks directory path")
 
-func writeAllHookFiles(gitHooksDirectoryPath string) error {
-	firstHook := gitHooks[0]
-	hookPath := filepath.Join(gitHooksDirectoryPath, firstHook)
-	writeFile(hookPath, hookFileContents)
+func createAllHookFiles(gitHooksDirectoryPath string) error {
+	if len(gitHooksDirectoryPath) < 1 {
+		return errInvalidGitHooksDirectoryPath
+	}
+
+	var notCreatedHooks []string
+
+	for _, hook := range gitHooks {
+		hookPath := filepath.Join(gitHooksDirectoryPath, hook)
+		err := writeFile(hookPath, hookFileContents)
+		if err != nil {
+			fmt.Printf("Errors were: %s", err)
+			notCreatedHooks = append(notCreatedHooks, hook)
+		}
+	}
+
+	if len(notCreatedHooks) > 0 {
+		return fmt.Errorf("encountered an error while attempting to create one or more hook files. did not create hooks: %v", notCreatedHooks)
+	}
+
 	return nil
 }
 
