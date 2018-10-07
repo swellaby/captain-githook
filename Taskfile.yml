@@ -31,6 +31,7 @@ tasks:
       - go get github.com/AlekSi/gocov-xml
       - go get github.com/matm/gocov-html
       - go get gotest.tools/gotestsum
+      - go get -u golang.org/x/lint/golint
     silent: true
     vars:
       TMP_DIR:

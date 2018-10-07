@@ -6,7 +6,7 @@ branches:
     - master
 
 cache:
-  - c:\users\appveyor\go -> magefile.go, go.mod, go.sum
+  - c:\users\appveyor\go -> go.mod, go.sum, scripts\setup.go
 
 install:
   - ps: $env:GOBIN = "$(go env GOPATH)\bin"
@@ -14,7 +14,7 @@ install:
   - go run .\scripts\setup.go
 
 test_script:
-  - task coverage
+  - task ci
 
 after_test:
   - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\.testresults\junit.xml))
