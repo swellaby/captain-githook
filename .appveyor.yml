@@ -12,11 +12,9 @@ install:
   - ps: $env:GOBIN = "$(go env GOPATH)\bin"
   - ps: $env:PATH += ";$($env:GOBIN);"
   - go run .\scripts\setup.go
-  - go get -u github.com/magefile/mage
 
 test_script:
-  - mage test
   - task ci
 
 after_test:
-  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\.testresults\junit2.xml))
+  - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/xunit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\.testresults\junit.xml))
