@@ -18,6 +18,8 @@ install:
 test_script:
 #   - task ci
   - mage test
+  - go run .\scripts\setup.go
+  - task test
 
 after_test:
 #   - ps: Get-ChildItem -Path .\.testresults
