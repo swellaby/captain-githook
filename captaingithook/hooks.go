@@ -70,6 +70,6 @@ func createAllHookFiles() error {
 	return nil
 }
 
-func removeAllHookFiles() {
-
+func removeAllHookFiles() error {
+	return nil
 }

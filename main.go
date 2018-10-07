@@ -5,5 +5,5 @@ import (
 )
 
 func main() {
-	fmt.Println("Foobar...")
+	fmt.Println("Ahoy there matey!")
 }

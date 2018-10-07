@@ -123,3 +123,11 @@ func TestCreateAllHookFilesCreatesCorrectHooks(t *testing.T) {
 		}
 	}
 }
+
+func TestRemoveAllHookFilesReturnsCorrectError(t *testing.T) {
+	var expErr error
+	err := removeAllHookFiles()
+	if err != expErr {
+		t.Errorf("Did not get correct error. Expected: %s, but got: %s", expErr, err)
+	}
+}

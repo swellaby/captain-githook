@@ -55,7 +55,7 @@ tasks:
     desc: Runs unit tests.
     deps: [create-report-dirs]
     cmds:
-      - gotestsum --format standard-verbose --junitfile {{.JUNIT_RESULTS_FILE}} --jsonfile {{.JSON_RESULTS_FILE}} -- -coverprofile={{.COVOUT_FILE}} ./pkg/captaingithook
+      - gotestsum --format standard-verbose --junitfile {{.JUNIT_RESULTS_FILE}} --jsonfile {{.JSON_RESULTS_FILE}} -- -coverprofile={{.COVOUT_FILE}} ./captaingithook
     silent: true
 
   coverage:
