@@ -76,6 +76,7 @@ tasks:
     desc: Runs the linter and pipes result to file for Sonar reports.
     cmds:
       - golint ./... > {{.TESTRESULTS_DIR}}/golint.out
+    silent: true
 
   vet:
     desc: Runs govet and prints results to STDOUT.
@@ -86,6 +87,7 @@ tasks:
     desc: Runs govet and pipes result to file for Sonar reports.
     cmds:
       - go vet ./... > {{.TESTRESULTS_DIR}}/govet.out
+    silent: true
 
   ci:
     desc: Runs sequence of desired commands for performing validation in a CI build
