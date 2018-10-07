@@ -19,4 +19,5 @@ test_script:
 after_test:
 #   - ps: Get-ChildItem -Path .\.testresults
 #   - ps: cat .testresults\junit.xml
+  - ps: echo $env:APPVEYOR_JOB_ID
   - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .testresults\junit.xml))
