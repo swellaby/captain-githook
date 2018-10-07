@@ -175,9 +175,9 @@ func TestInitializeWithFileNameCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 	}
 }
 
-func TestFoo(t *testing.T) {
-	err := Initialize()
-	if err != nil {
-		t.Errorf("Error was not nil. Error: %s", err)
-	}
-}
+// func TestFoo(t *testing.T) {
+// 	err := Initialize()
+// 	if err != nil {
+// 		t.Errorf("Error was not nil. Error: %s", err)
+// 	}
+// }
