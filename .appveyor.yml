@@ -13,6 +13,7 @@ install:
   - ps: $env:PATH += ";$($env:GOBIN);"
 #   - go run .\scripts\setup.go
   - go get github.com/magefile/mage
+  - mage setup
 
 test_script:
 #   - task ci
