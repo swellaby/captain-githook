@@ -11,7 +11,7 @@ jobs:
       - run:
           name: setup repo
           command: go run ./scripts/setup.go
-      - run: mage test
+      - run: task coverage
 
       - run:
           name: Push coverage to Codecov
