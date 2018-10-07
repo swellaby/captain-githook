@@ -17,5 +17,5 @@ test_script:
   - task ci
 
 after_test:
-  - ps: (Get-Content .testresults\junit.xml | Out-String) -replace "0.000s", "0.000" | Out-File .testresults\junit.xml
+  - ps: (Get-Content .testresults\junit.xml | Out-String) -replace "(\d+\.?\d+)(s)?",'$1' | Out-File .testresults\junit.xml
   - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .testresults\junit.xml))

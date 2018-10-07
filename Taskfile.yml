@@ -47,7 +47,7 @@ tasks:
   clean:
     desc: Cleans the workspace.
     cmds:
-      - '{{if eq OS "windows"}}cmd.exe /C rd /Q /S{{else}}rm -rf{{end}}{{.TESTRESULTS_DIR}} {{.COVERAGE_DIR}}'
+      - '{{if eq OS "windows"}}cmd.exe /C rd /Q /S{{else}}rm -rf{{end}} {{.TESTRESULTS_DIR}} {{.COVERAGE_DIR}}'
     silent: true
     ignore_error: true
 
