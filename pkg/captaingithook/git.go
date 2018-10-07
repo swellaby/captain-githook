@@ -31,5 +31,8 @@ func getHooksDirectory() (string, error) {
 		return "", errors.New(errMsg)
 	}
 
+	hooksDir = strings.TrimSuffix(hooksDir, "\r\n")
+	hooksDir = strings.TrimSuffix(hooksDir, "\n")
+
 	return hooksDir, nil
 }

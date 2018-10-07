@@ -47,18 +47,18 @@ fi`
 var hookFileContents = []byte(hookFileScript)
 var errInvalidGitHooksDirectoryPath = errors.New("invalid git hooks directory path")
 
-func createAllHookFiles(gitHooksDirectoryPath string) error {
-	if len(gitHooksDirectoryPath) < 1 {
+func createAllHookFiles() error {
+	hooksDir, hooksErr := getGitRepoHooksDirectory()
+	if hooksErr != nil {
 		return errInvalidGitHooksDirectoryPath
 	}
 
 	var notCreatedHooks []string
 
 	for _, hook := range gitHooks {
-		hookPath := filepath.Join(gitHooksDirectoryPath, hook)
+		hookPath := filepath.Join(hooksDir, hook)
 		err := writeFile(hookPath, hookFileContents)
 		if err != nil {
-			fmt.Printf("Errors were: %s", err)
 			notCreatedHooks = append(notCreatedHooks, hook)
 		}
 	}

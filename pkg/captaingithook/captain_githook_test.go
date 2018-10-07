@@ -118,3 +118,10 @@ func TestInitializeWithFileNameCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 		t.Errorf("Did not get correct config file name. Expected: %s, but got %s", expFileName, actualFileName)
 	}
 }
+
+// func TestFoo(t *testing.T) {
+// 	err := Initialize()
+// 	if err != nil {
+// 		t.Errorf("Error was not nil. Error: %s", err)
+// 	}
+// }

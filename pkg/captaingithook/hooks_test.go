@@ -49,14 +49,14 @@ var expHookFileContents = []byte(expHookFileScript)
 
 const gitHooksPath = "/usr/foo/repos/bar/.git/hooks"
 
-func TestCreateAllHookFilesReturnsCorrectErrorOnEmptyHooksDir(t *testing.T) {
-	err := createAllHookFiles("")
-
-	if err == nil {
-		t.Errorf("Expected to get an error but error was nil")
+func TestCreateAllHookFilesReturnsCorrectErrorOnHooksDirError(t *testing.T) {
+	origGitFunc := getGitRepoHooksDirectory
+	defer func() { getGitRepoHooksDirectory = origGitFunc }()
+	getGitRepoHooksDirectory = func() (string, error) {
+		return "", errors.New("")
 	}
 
-	if err != errInvalidGitHooksDirectoryPath {
+	if err := createAllHookFiles(); err != errInvalidGitHooksDirectoryPath {
 		t.Errorf("Did not get correct error. Expected: %s, but got: %s", errInvalidGitHooksDirectoryPath, err)
 	}
 }
@@ -64,6 +64,11 @@ func TestCreateAllHookFilesReturnsCorrectErrorOnEmptyHooksDir(t *testing.T) {
 func TestCreateAllHookFilesReturnsCorrectErrorWhenSomeHooksNotCreated(t *testing.T) {
 	expErrorHooks := [2]string{"pre-commit", "commit-msg"}
 	expErrMsg := fmt.Sprintf("encountered an error while attempting to create one or more hook files. did not create hooks: %v", expErrorHooks)
+	origGitFunc := getGitRepoHooksDirectory
+	defer func() { getGitRepoHooksDirectory = origGitFunc }()
+	getGitRepoHooksDirectory = func() (string, error) {
+		return gitHooksPath, nil
+	}
 	originalWriteFile := writeFile
 	defer func() { writeFile = originalWriteFile }()
 	writeFile = func(filePath string, contents []byte) error {
@@ -76,7 +81,7 @@ func TestCreateAllHookFilesReturnsCorrectErrorWhenSomeHooksNotCreated(t *testing
 
 		return nil
 	}
-	err := createAllHookFiles(gitHooksPath)
+	err := createAllHookFiles()
 
 	if err == nil {
 		t.Errorf("Expected to get an error but error was nil")
@@ -89,6 +94,11 @@ func TestCreateAllHookFilesReturnsCorrectErrorWhenSomeHooksNotCreated(t *testing
 
 func TestCreateAllHookFilesCreatesCorrectHooks(t *testing.T) {
 	var actHookPaths []string
+	origGitFunc := getGitRepoHooksDirectory
+	defer func() { getGitRepoHooksDirectory = origGitFunc }()
+	getGitRepoHooksDirectory = func() (string, error) {
+		return gitHooksPath, nil
+	}
 	originalWriteFile := writeFile
 	defer func() { writeFile = originalWriteFile }()
 	writeFile = func(filePath string, contents []byte) error {
@@ -100,7 +110,7 @@ func TestCreateAllHookFilesCreatesCorrectHooks(t *testing.T) {
 		actHookPaths = append(actHookPaths, filePath)
 		return nil
 	}
-	createAllHookFiles(gitHooksPath)
+	createAllHookFiles()
 
 	if len(actHookPaths) != len(expGitHooks) {
 		t.Errorf("Did not create correct number of hook files. Expected %d, but got %d", len(expGitHooks), len(actHookPaths))
@@ -113,10 +123,3 @@ func TestCreateAllHookFilesCreatesCorrectHooks(t *testing.T) {
 		}
 	}
 }
-
-// func TestFoo(t *testing.T) {
-// 	err := createAllHookFiles("c:/dev/captain-githook/hooks")
-// 	if err != nil {
-// 		t.Errorf("Error was not nil. Error: %s", err)
-// 	}
-// }
