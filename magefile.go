@@ -14,7 +14,7 @@ import (
 const (
 	testResultsDirectory     = ".testresults/"
 	coverageResultsDirectory = ".coverage/"
-	junitXmlTestResultsFile  = testResultsDirectory + "junit.xml"
+	junitXmlTestResultsFile  = testResultsDirectory + "junit2.xml"
 	jsonTestResultsFile      = testResultsDirectory + "unit.json"
 	coverageOutFile          = coverageResultsDirectory + "coverage.out"
 	coberturaCoverageFile    = coverageResultsDirectory + "cobertura.xml"
