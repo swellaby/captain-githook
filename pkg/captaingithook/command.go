@@ -1,6 +1,7 @@
 package captaingithook
 
 import (
+	"fmt"
 	"os/exec"
 	"runtime"
 )
@@ -46,6 +47,9 @@ func runInDir(directory, command string, commandArgs ...string) (resultOutput st
 	cmd := createCommand(directory, command, commandArgs...)
 
 	out, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("Got an error when running command: '%s' with args: '%v'. Error: %s", command, commandArgs, err)
+	}
 	resultOutput = string(out)
 
 	return resultOutput, err
