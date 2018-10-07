@@ -17,10 +17,10 @@ func InitializeWithFileName(desiredConfigFileName string) error {
 		return configErr
 	}
 
-	// hooksErr := initializeGitHookFiles()
-	// if hooksErr != nil {
-	// 	return hooksErr
-	// }
+	hooksErr := initializeGitHookFiles()
+	if hooksErr != nil {
+		return hooksErr
+	}
 
 	return nil
 }
