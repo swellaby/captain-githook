@@ -40,6 +40,28 @@ func TestInitializeReturnsCorrectErrorOnFailedConfigCreation(t *testing.T) {
 	}
 }
 
+func TestInitializeReturnsCorrectErrorOnFailedHookFileCreation(t *testing.T) {
+	origGitFunc := getGitRepoRootDirectoryPath
+	defer func() { getGitRepoRootDirectoryPath = origGitFunc }()
+	getGitRepoRootDirectoryPath = func() (string, error) {
+		return "", nil
+	}
+	origFunc := initializeCaptainGithookConfigFile
+	defer func() { initializeCaptainGithookConfigFile = origFunc }()
+	initializeCaptainGithookConfigFile = func(path, fileName string) error {
+		return nil
+	}
+	origHookFunc := initializeGitHookFiles
+	defer func() { initializeGitHookFiles = origHookFunc }()
+	initializeGitHookFiles = func() error {
+		return errInvalidGitHooksDirectoryPath
+	}
+
+	if err := Initialize(); err != errInvalidGitHooksDirectoryPath {
+		t.Errorf("Did not get correct error. Expected: %s, but got %s", errInvalidGitHooksDirectoryPath, err)
+	}
+}
+
 func TestInitializeCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 	origGitFunc := getGitRepoRootDirectoryPath
 	defer func() { getGitRepoRootDirectoryPath = origGitFunc }()
@@ -49,6 +71,11 @@ func TestInitializeCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 	origFunc := initializeCaptainGithookConfigFile
 	defer func() { initializeCaptainGithookConfigFile = origFunc }()
 	initializeCaptainGithookConfigFile = func(path, fileName string) error {
+		return nil
+	}
+	origHookFunc := initializeGitHookFiles
+	defer func() { initializeGitHookFiles = origHookFunc }()
+	initializeGitHookFiles = func() error {
 		return nil
 	}
 
@@ -94,6 +121,30 @@ func TestInitializeWithFileNameReturnsCorrectErrorOnFailedConfigCreation(t *test
 	}
 }
 
+func TestInitializeWithFileNameReturnsCorrectErrorOnFailedHookFileCreation(t *testing.T) {
+	origGitFunc := getGitRepoRootDirectoryPath
+	defer func() { getGitRepoRootDirectoryPath = origGitFunc }()
+	getGitRepoRootDirectoryPath = func() (string, error) {
+		return "", nil
+	}
+	origFunc := initializeCaptainGithookConfigFile
+	defer func() { initializeCaptainGithookConfigFile = origFunc }()
+	initializeCaptainGithookConfigFile = func(path, fileName string) error {
+		return nil
+	}
+	origHookFunc := initializeGitHookFiles
+	defer func() { initializeGitHookFiles = origHookFunc }()
+	initializeGitHookFiles = func() error {
+		return errInvalidGitHooksDirectoryPath
+	}
+
+	err := InitializeWithFileName("")
+
+	if err != errInvalidGitHooksDirectoryPath {
+		t.Errorf("Did not get correct error. Expected: %s, but got %s", errInvalidGitHooksDirectoryPath, err)
+	}
+}
+
 func TestInitializeWithFileNameCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 	origGitFunc := getGitRepoRootDirectoryPath
 	defer func() { getGitRepoRootDirectoryPath = origGitFunc }()
@@ -105,6 +156,11 @@ func TestInitializeWithFileNameCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 	actualFileName := ""
 	initializeCaptainGithookConfigFile = func(path, fileName string) error {
 		actualFileName = fileName
+		return nil
+	}
+	origHookFunc := initializeGitHookFiles
+	defer func() { initializeGitHookFiles = origHookFunc }()
+	initializeGitHookFiles = func() error {
 		return nil
 	}
 	expFileName := ".captaingithookrc.json"

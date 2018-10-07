@@ -16,6 +16,11 @@ func (m MockCommand) CombinedOutput() ([]byte, error) {
 	return nil, nil
 }
 
+const echoScript = "echo foobar"
+
+var echoCmd = [...]string{"sh", "-c", echoScript}
+var expNumArgs = len(echoCmd)
+
 func TestGetRunnerInfoReturnsCorrectValueOnWindows(t *testing.T) {
 	const expectedRunner = "cmd.exe"
 	const expectedRunnerArg = "/C"
@@ -61,15 +66,17 @@ func TestNewCommandUsesDirectoryWhenSpecified(t *testing.T) {
 		return mockCmd
 	}
 	defer func() { osCommand = exec.Command }()
-	name, cmdSwitch := "sh", "-c"
-	arg := []string{cmdSwitch, "echo", "foobar"}
 
-	if newCommand(dir, name, arg...) == nil {
+	if newCommand(dir, echoScript) == nil {
 		t.Errorf("Got a nil exec.Command object.")
 	}
 
 	if mockCmd.Dir != dir {
 		t.Errorf("Target directory for command was incorrect. Expected: %s, but got: %s.", dir, mockCmd.Dir)
+	}
+
+	if numArgs := len(mockCmd.Args); numArgs != expNumArgs {
+		t.Errorf("Did not get correct number of command args. Expected: %d, but got: %d", expNumArgs, numArgs)
 	}
 }
 
@@ -83,28 +90,29 @@ func TestNewCommandUsesCallingProcDirectoryWhenNotSpecified(t *testing.T) {
 	}
 	defer func() { osCommand = exec.Command }()
 
-	name, cmdSwitch := "sh", "-c"
-	arg := []string{cmdSwitch, "echo", "foobar"}
-
-	if newCommand(dir, name, arg...) == nil {
+	if newCommand(dir, echoScript) == nil {
 		t.Errorf("Got a nil exec.Command object.")
 	}
 
 	if mockCmd.Dir != dir {
 		t.Errorf("Target directory for command was incorrect. Expected: %s, but got: %s.", dir, mockCmd.Dir)
 	}
+
+	if numArgs := len(mockCmd.Args); numArgs != expNumArgs {
+		t.Errorf("Did not get correct number of command args. Expected: %d, but got: %d", expNumArgs, numArgs)
+	}
 }
 
 func TestRunReturnsCorrectResults(t *testing.T) {
 	mockBytes := []byte("foobar")
-	createCommand = func(directory, name string, args ...string) command {
+	createCommand = func(directory, script string) command {
 		return &MockCommand{CombinedOutputFunc: func() ([]byte, error) {
 			return mockBytes, nil
 		}}
 	}
 	defer func() { createCommand = newCommand }()
 
-	result, err := run("", "")
+	result, err := run("")
 
 	if err != nil {
 		t.Errorf("Err was not nil. Got: %s.", err)

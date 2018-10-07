@@ -55,7 +55,7 @@ tasks:
     desc: Runs unit tests.
     deps: [create-report-dirs]
     cmds:
-      - gotestsum --format standard-verbose --junitfile {{.JUNIT_RESULTS_FILE}} --jsonfile {{.JSON_RESULTS_FILE}}  -- -coverprofile={{.COVOUT_FILE}} ./pkg/captaingithook
+      - gotestsum --format standard-verbose --junitfile {{.JUNIT_RESULTS_FILE}} --jsonfile {{.JSON_RESULTS_FILE}} -- -coverprofile={{.COVOUT_FILE}} ./pkg/captaingithook
     silent: true
 
   coverage:
@@ -66,6 +66,12 @@ tasks:
       - gocov-xml < {{.GOCOV_JSON_FILE}} > {{.COBERTURA_XML_FILE}}
       - gocov-html {{.GOCOV_JSON_FILE}} > {{.GOCOV_HTML_FILE}}
     silent: true
+
+  open-cov:
+    desc: Opens the HTML Code Coverage Report
+    deps: [coverage]
+    cmds:
+      - '{{if eq OS "windows"}}cmd.exe /C start{{else if eq OS "darwin"}}open{{else}}xdg-open{{end}} {{.GOCOV_HTML_FILE}}'
 
   lint:
     desc: Runs the linter and prints results to STDOUT.

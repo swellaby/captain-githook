@@ -9,7 +9,7 @@ var getGitRepoRootDirectoryPath = getRootDirectoryPath
 var getGitRepoHooksDirectory = getHooksDirectory
 
 func getRootDirectoryPath() (gitDirPath string, err error) {
-	result, err := runCommand("git", "rev-parse", "--show-toplevel")
+	result, err := runCommand("git rev-parse --show-toplevel")
 
 	if err != nil {
 		baseErr := err.Error()
@@ -24,7 +24,7 @@ func getRootDirectoryPath() (gitDirPath string, err error) {
 }
 
 func getHooksDirectory() (string, error) {
-	hooksDir, err := runCommand("git", "rev-parse", "--git-path", "hooks")
+	hooksDir, err := runCommand("git rev-parse --git-path hooks")
 	if err != nil {
 		baseErr := err.Error()
 		errMsg := "unexpected error encountered while trying to determine the git repo hooks directory. Error details: " + baseErr

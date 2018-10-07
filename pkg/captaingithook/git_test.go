@@ -5,11 +5,14 @@ import (
 	"testing"
 )
 
+const expGitRootCommand = "git rev-parse --show-toplevel"
+const expGitHooksCommand = "git rev-parse --git-path hooks"
+
 func TestGetRootDirectoryPathHandlesErrorCorrectly(t *testing.T) {
 	errMsgDetails := "not a git repo"
 	expectedErrMsg := "unexpected error encountered while trying to determine the git repo root directory. Error details: " + errMsgDetails
 	origRunCommand := runCommand
-	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
+	runCommand = func(cmd string) (string, error) {
 		return "", errors.New(errMsgDetails)
 	}
 	defer func() { runCommand = origRunCommand }()
@@ -28,7 +31,7 @@ func TestGetRootDirectoryPathHandlesErrorCorrectly(t *testing.T) {
 func TestGetRootDirectoryPathHandlesEmptyDirectoryCorrectly(t *testing.T) {
 	expectedErrMsg := "got an unexpected result for the git repo root directory."
 	origRunCommand := runCommand
-	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
+	runCommand = func(cmd string) (string, error) {
 		return "", nil
 	}
 	defer func() { runCommand = origRunCommand }()
@@ -51,7 +54,7 @@ func TestGetRootDirectoryPathHandlesEmptyDirectoryCorrectly(t *testing.T) {
 func TestGetGitRepoRootDirectoryPathReturnsDirectoryCorrectly(t *testing.T) {
 	expectedGitDir := "/usr/repos/captain-githook"
 	origRunCommand := runCommand
-	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
+	runCommand = func(cmd string) (string, error) {
 		return expectedGitDir, nil
 	}
 	defer func() { runCommand = origRunCommand }()
@@ -68,36 +71,17 @@ func TestGetGitRepoRootDirectoryPathReturnsDirectoryCorrectly(t *testing.T) {
 }
 
 func TestGetGitRepoRootDirectoryUsesCorrectCommand(t *testing.T) {
-	expectedCmd := "git"
-	expectedCmdArgs := []string{"rev-parse", "--show-toplevel"}
 	var actualCmd string
-	var actualCmdArgs []string
 	origRunCommand := runCommand
-	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
+	runCommand = func(cmd string) (string, error) {
 		actualCmd = cmd
-		actualCmdArgs = cmdArgs
 		return "", nil
 	}
 	defer func() { runCommand = origRunCommand }()
 	getGitRepoRootDirectoryPath()
 
-	if actualCmd != expectedCmd {
-		t.Errorf("Used incorrect command. Expected: %s, but got: %s", expectedCmd, actualCmd)
-	}
-
-	aCount := len(actualCmdArgs)
-	eCount := len(expectedCmdArgs)
-
-	if aCount != eCount {
-		t.Errorf("Used incorrect number of commandArgs. Expected: %d, but got: %d", eCount, aCount)
-	}
-
-	if actualCmdArgs[0] != expectedCmdArgs[0] {
-		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[0], actualCmdArgs[0])
-	}
-
-	if actualCmdArgs[1] != expectedCmdArgs[1] {
-		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[1], actualCmdArgs[1])
+	if actualCmd != expGitRootCommand {
+		t.Errorf("Used incorrect command. Expected: %s, but got: %s", expGitRootCommand, actualCmd)
 	}
 }
 
@@ -105,7 +89,7 @@ func TestGetHooksDirectoryReturnsErrorWhenCommandFails(t *testing.T) {
 	errMsgDetails := "ouch"
 	expectedErrMsg := "unexpected error encountered while trying to determine the git repo hooks directory. Error details: " + errMsgDetails
 	origRunCommand := runCommand
-	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
+	runCommand = func(cmd string) (string, error) {
 		return "", errors.New(errMsgDetails)
 	}
 	defer func() { runCommand = origRunCommand }()
@@ -122,39 +106,16 @@ func TestGetHooksDirectoryReturnsErrorWhenCommandFails(t *testing.T) {
 }
 
 func TestGetHooksDirectoryUsesCorrectCommand(t *testing.T) {
-	expectedCmd := "git"
-	expectedCmdArgs := []string{"rev-parse", "--git-path", "hooks"}
 	var actualCmd string
-	var actualCmdArgs []string
 	origRunCommand := runCommand
-	runCommand = func(cmd string, cmdArgs ...string) (string, error) {
+	runCommand = func(cmd string) (string, error) {
 		actualCmd = cmd
-		actualCmdArgs = cmdArgs
 		return "", nil
 	}
 	defer func() { runCommand = origRunCommand }()
 	getHooksDirectory()
 
-	if actualCmd != expectedCmd {
-		t.Errorf("Used incorrect command. Expected: %s, but got: %s", expectedCmd, actualCmd)
-	}
-
-	aCount := len(actualCmdArgs)
-	eCount := len(expectedCmdArgs)
-
-	if aCount != eCount {
-		t.Errorf("Used incorrect number of commandArgs. Expected: %d, but got: %d", eCount, aCount)
-	}
-
-	if actualCmdArgs[0] != expectedCmdArgs[0] {
-		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[0], actualCmdArgs[0])
-	}
-
-	if actualCmdArgs[1] != expectedCmdArgs[1] {
-		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[1], actualCmdArgs[1])
-	}
-
-	if actualCmdArgs[2] != expectedCmdArgs[2] {
-		t.Errorf("Used incorrect command switch. Expected: %s, but got: %s", expectedCmdArgs[2], actualCmdArgs[2])
+	if actualCmd != expGitHooksCommand {
+		t.Errorf("Used incorrect command. Expected: %s, but got: %s", expGitHooksCommand, actualCmd)
 	}
 }
