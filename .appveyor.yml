@@ -11,18 +11,18 @@ cache:
 install:
   - ps: $env:GOBIN = "$(go env GOPATH)\bin"
   - ps: $env:PATH += ";$($env:GOBIN);"
-#   - go run .\scripts\setup.go
-  - go get github.com/magefile/mage
-  - mage setup
+  - go run .\scripts\setup.go
+#   - go get github.com/magefile/mage
+#   - mage setup
 
 test_script:
 #   - task ci
-  - mage test
-  - go run .\scripts\setup.go
+#   - mage test
+#   - go run .\scripts\setup.go
   - task test
 
 after_test:
 #   - ps: Get-ChildItem -Path .\.testresults
 #   - ps: cat .testresults\junit.xml
-  - ps: echo $env:APPVEYOR_JOB_ID
+  - ps: (Get-Content .testresults\junit.xml | Out-String) -replace "0.000s", "0.000" | Out-File .testresults\junit.xml
   - ps: (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/junit/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .testresults\junit.xml))
