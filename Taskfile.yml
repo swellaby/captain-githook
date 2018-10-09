@@ -19,7 +19,13 @@ tasks:
 
   setup:
     desc: Sets up the workspace.
-    deps: [install-dev-deps, create-report-dirs]
+    deps: [install-deps, install-dev-deps, create-report-dirs]
+
+  install-deps:
+    desc: Runs go mod download
+    cmds:
+      - go mod download
+    silent: true
 
   install-dev-deps:
     desc: Installs dev dependencies.
