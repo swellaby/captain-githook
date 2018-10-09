@@ -33,7 +33,7 @@ var expGitHooks = [...]string{
 
 const expHookFileScript = `#!/bin/sh
 # captain-githook
-# version v0.0.1
+# version ` + Version + `
 
 hookName=` + "`basename \"$0\"`" + `
 gitParams="$*"
