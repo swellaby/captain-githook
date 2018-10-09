@@ -1,0 +1,106 @@
+# github.com/go-task/task
+
+version: '2'
+
+vars:
+  COVERAGE_DIR: ".coverage"
+  COVOUT_FILE: "{{.COVERAGE_DIR}}/coverage.out"
+  GOCOV_JSON_FILE: "{{.COVERAGE_DIR}}/gocov.json"
+  GOCOV_HTML_FILE: "{{.COVERAGE_DIR}}/index.html"
+  COBERTURA_XML_FILE: "{{.COVERAGE_DIR}}/cobertura.xml"
+  TESTRESULTS_DIR: ".testresults"
+  JUNIT_RESULTS_FILE: "{{.TESTRESULTS_DIR}}/junit.xml"
+  JSON_RESULTS_FILE: "{{.TESTRESULTS_DIR}}/unit.json"
+
+tasks:
+  default:
+    deps: [test]
+    silent: true
+
+  setup:
+    desc: Sets up the workspace.
+    deps: [install-deps, install-dev-deps, create-report-dirs]
+
+  install-deps:
+    desc: Runs go mod download
+    cmds:
+      - go mod download
+    silent: true
+
+  install-dev-deps:
+    desc: Installs dev dependencies.
+    # Run this outside the working directory to prevent
+    # these dev deps from being added to the go.mod file.
+    dir: '{{toSlash .TMP_DIR}}'
+    cmds:
+      - go get github.com/axw/gocov/gocov
+      - go get github.com/AlekSi/gocov-xml
+      - go get github.com/matm/gocov-html
+      - go get gotest.tools/gotestsum
+      - go get -u golang.org/x/lint/golint
+    silent: true
+    vars:
+      TMP_DIR:
+        sh: go env GOPATH
+
+  create-report-dirs:
+    desc: Creates the directories where generated reports are written.
+    cmds:
+      - '{{if eq OS "windows"}}cmd.exe /C IF NOT EXIST {{.TESTRESULTS_DIR}} mkdir {{.TESTRESULTS_DIR}}{{else}}mkdir -p {{.TESTRESULTS_DIR}}{{end}}'
+      - '{{if eq OS "windows"}}cmd.exe /C IF NOT EXIST {{.COVERAGE_DIR}} mkdir {{.COVERAGE_DIR}}{{else}}mkdir -p {{.COVERAGE_DIR}}{{end}}'
+    silent: true
+
+  clean:
+    desc: Cleans the workspace.
+    cmds:
+      - '{{if eq OS "windows"}}cmd.exe /C rd /Q /S{{else}}rm -rf{{end}} {{.TESTRESULTS_DIR}} {{.COVERAGE_DIR}}'
+    silent: true
+    ignore_error: true
+
+  test:
+    desc: Runs unit tests.
+    deps: [create-report-dirs]
+    cmds:
+      - gotestsum --format standard-verbose --junitfile {{.JUNIT_RESULTS_FILE}} --jsonfile {{.JSON_RESULTS_FILE}} -- -coverprofile={{.COVOUT_FILE}} ./captaingithook ./internal/cli
+    silent: true
+
+  coverage:
+    desc: Runs unit tests and generates code coverage reports.
+    deps: [test]
+    cmds:
+      - gocov convert {{.COVOUT_FILE}} > {{.GOCOV_JSON_FILE}}
+      - gocov-xml < {{.GOCOV_JSON_FILE}} > {{.COBERTURA_XML_FILE}}
+      - gocov-html {{.GOCOV_JSON_FILE}} > {{.GOCOV_HTML_FILE}}
+    silent: true
+
+  open-cov:
+    desc: Opens the HTML Code Coverage Report
+    deps: [coverage]
+    cmds:
+      - '{{if eq OS "windows"}}cmd.exe /C start{{else if eq OS "darwin"}}open{{else}}xdg-open{{end}} {{.GOCOV_HTML_FILE}}'
+
+  lint:
+    desc: Runs the linter and prints results to STDOUT.
+    cmds:
+      - golint ./...
+
+  lint-ci:
+    desc: Runs the linter and pipes result to file for Sonar reports.
+    cmds:
+      - golint ./... > {{.TESTRESULTS_DIR}}/golint.out
+    silent: true
+
+  vet:
+    desc: Runs govet and prints results to STDOUT.
+    cmds:
+      - go vet ./...
+
+  vet-ci:
+    desc: Runs govet and pipes result to file for Sonar reports.
+    cmds:
+      - go vet ./... > {{.TESTRESULTS_DIR}}/govet.out
+    silent: true
+
+  ci:
+    desc: Runs sequence of desired commands for performing validation in a CI build
+    deps: [coverage, vet-ci, lint-ci]

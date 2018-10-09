@@ -10,8 +10,9 @@
     "go.autocompleteUnimportedPackages": false,
     "go.vetOnSave": "off",
     "go.testOnSave": false,
+    "go.formatTool": "gofmt",
     "go.buildTags": "mage vscode",
     "[go]": {
-        "editor.formatOnSave": false
+        "editor.formatOnSave": true
      }
 }

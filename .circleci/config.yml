@@ -9,9 +9,9 @@ jobs:
     steps:
       - checkout
       - run:
-          name: bootstrap repo
-          command: go run bootstrap.go
-      - run: mage test
+          name: setup repo
+          command: go run ./scripts/setup.go
+      - run: task coverage
 
       - run:
           name: Push coverage to Codecov
