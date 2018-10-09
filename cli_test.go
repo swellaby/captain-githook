@@ -5,5 +5,4 @@ import (
 )
 
 func TestFoo(t *testing.T) {
-	execute()
 }
