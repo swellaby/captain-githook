@@ -104,3 +104,15 @@ tasks:
   ci:
     desc: Runs sequence of desired commands for performing validation in a CI build
     deps: [coverage, vet-ci, lint-ci]
+
+  print-version:
+    desc: Prints the current captain-githook package version
+    cmds:
+      - go run ./scripts/version/print/main.go
+    silent: true
+
+  bump-version:
+    desc: Bumps the current captain-githook package patch version
+    cmds:
+      - go run ./scripts/version/bump/main.go
+    silent: true
