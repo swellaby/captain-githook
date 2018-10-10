@@ -1,5 +1,8 @@
 {
   "extends": [
-    "config:base"
-  ]
+    "@swellaby"
+  ],
+  "circleci": {
+      "enabled": false
+  }
 }
