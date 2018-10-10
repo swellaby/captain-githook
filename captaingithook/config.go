@@ -7,7 +7,10 @@ import (
 )
 
 var jsonMarshallIndent = json.MarshalIndent
+var jsonUnmarshall = json.Unmarshal
 var initializeCaptainGithookConfigFile = initConfigFile
+var errConfigFileNotFound = errors.New("did not find a captain-githook config file, unable to run hook")
+var errConfigFileParseFailed = errors.New("encountered a fatal error while attempting to parse the captain-githook config file")
 
 var configFileNames = [...]string{
 	"captaingithook.json",
@@ -24,14 +27,12 @@ var configFileNames = [...]string{
 	".captain-githookrc.json",
 }
 
-// var errFailedToFindGitRepo = errors.New("encountered a fatal error while trying to determine the root directory of the git repo")
-
-// Config foo
+// Config represents a captain-githook configuration
 type Config struct {
 	Hooks HooksConfig `json:"hooks,omitempty"`
 }
 
-// HooksConfig bar
+// HooksConfig represents the git hooks configuration
 type HooksConfig struct {
 	PreCommit string `json:"pre-commit,omitempty"`
 	PrePush   string `json:"pre-push,omitempty"`
@@ -97,16 +98,29 @@ func initConfigFile(repoPath, desiredFileName string) error {
 	return nil
 }
 
-func getRepoConfig() (config *Config, err error) {
-	// path, err := getGitRepoRootDirectoryPath()
-	// if err != nil {
-	// 	return nil, errFailedToFindGitRepo
-	// }
+func getRepoConfig(repoRootDirectoryPath string) (config *Config, err error) {
+	var configFileContents []byte
+	foundConfigFile := false
 
-	// for _, configFileName := range configFileNames {
-	// 	configFilePath := filepath.Join(path, configFileName)
-	// 	readFile(configFilePath)
-	// }
+	for _, configFileName := range configFileNames {
+		configFilePath := filepath.Join(repoRootDirectoryPath, configFileName)
 
-	return nil, nil
+		if fileContents, err := readFile(configFilePath); err == nil {
+			configFileContents = fileContents
+			foundConfigFile = true
+			break
+		}
+	}
+
+	if !foundConfigFile {
+		return nil, errConfigFileNotFound
+	}
+
+	parseErr := jsonUnmarshall(configFileContents, &config)
+
+	if parseErr != nil {
+		return nil, errConfigFileParseFailed
+	}
+
+	return config, nil
 }
