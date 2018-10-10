@@ -1,5 +1,4 @@
 .coverage/
 .testresults/
 **/*.exe
-cmd/captain-githook/captain-githook
-pkg/captain-githook/captain-githook
+./captain-githook
