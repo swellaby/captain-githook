@@ -1,0 +1,8 @@
+{
+  "extends": [
+    "@swellaby"
+  ],
+  "circleci": {
+      "enabled": false
+  }
+}
