@@ -259,14 +259,3 @@ func TestGetRepoConfigReturnsCorrectConfig(t *testing.T) {
 		t.Errorf("Error was not nil. Error was: %s", err)
 	}
 }
-
-// func TestFoo(t *testing.T) {
-// 	config, err := getRepoConfig("c:/dev/captain-githook")
-// 	if err != nil {
-// 		t.Errorf("Error was not nil. Error: %s", err)
-// 	}
-// 	hooks := config.Hooks
-// 	fmt.Printf("Config value: %v\n", hooks)
-// 	fmt.Printf("PreCommit hook value: %s\n", hooks.PreCommit)
-
-// }

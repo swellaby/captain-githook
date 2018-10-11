@@ -175,9 +175,102 @@ func TestInitializeWithFileNameCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 	}
 }
 
-// func TestFoo(t *testing.T) {
-// 	err := Initialize()
-// 	if err != nil {
-// 		t.Errorf("Error was not nil. Error: %s", err)
-// 	}
-// }
+func TestRunHookReturnsCorrectErrorOnUnknownGitRoot(t *testing.T) {
+	expectedErr := errors.New("0978234")
+	origFunc := getGitRepoRootDirectoryPath
+	defer func() { getGitRepoRootDirectoryPath = origFunc }()
+	getGitRepoRootDirectoryPath = func() (string, error) {
+		return "", expectedErr
+	}
+
+	output, err := RunHook("")
+
+	if err != expectedErr {
+		t.Errorf("Did not get correct error. Expected: %s, but got %s", expectedErr, err)
+	}
+
+	if output != "" {
+		t.Errorf("Output was not the expected empty string. Output: %s", output)
+	}
+}
+
+func TestRunHookReturnsCorrectErrorOnConfigLoadError(t *testing.T) {
+	expDirPath := "/foo"
+	actDirPath := ""
+	expError := errors.New("adfadf")
+	origGitFunc := getGitRepoRootDirectoryPath
+	defer func() { getGitRepoRootDirectoryPath = origGitFunc }()
+	getGitRepoRootDirectoryPath = func() (string, error) {
+		return expDirPath, nil
+	}
+	origConfigFunc := getCaptainGithookConfig
+	defer func() { getCaptainGithookConfig = origConfigFunc }()
+	getCaptainGithookConfig = func(path string) (*Config, error) {
+		actDirPath = path
+		return nil, expError
+	}
+
+	output, err := RunHook("")
+
+	if err != expError {
+		t.Errorf("Did not get correct error. Expected: %s, but got %s", expError, err)
+	}
+
+	if output != "" {
+		t.Errorf("Output was not the expected empty string. Output: %s", output)
+	}
+
+	if actDirPath != expDirPath {
+		t.Errorf("Did not use correct directory path to locate config. Expected: %s, but got %s", expDirPath, actDirPath)
+	}
+}
+
+func TestRunHookReturnsCorrectResultOfScriptExecution(t *testing.T) {
+	var actConfig *Config
+	expDirPath := "/usr/bar"
+	actDirPath := ""
+	expHookName := "commit-msg"
+	actHookName := ""
+	expError := errors.New("abc123")
+	expOutput := "golint ./..."
+	origGitFunc := getGitRepoRootDirectoryPath
+	defer func() { getGitRepoRootDirectoryPath = origGitFunc }()
+	getGitRepoRootDirectoryPath = func() (string, error) {
+		return expDirPath, nil
+	}
+	origConfigFunc := getCaptainGithookConfig
+	defer func() { getCaptainGithookConfig = origConfigFunc }()
+	getCaptainGithookConfig = func(path string) (*Config, error) {
+		return runnerConfig, nil
+	}
+	origRunFunc := runHookScript
+	defer func() { runHookScript = origRunFunc }()
+	runHookScript = func(cfg *Config, hn, dir string) (string, error) {
+		actConfig = cfg
+		actHookName = hn
+		actDirPath = dir
+		return expOutput, expError
+	}
+
+	output, err := RunHook(expHookName)
+
+	if err != expError {
+		t.Errorf("Did not get correct error. Expected: %s, but got %s", expError, err)
+	}
+
+	if output != expOutput {
+		t.Errorf("Output was not the expected empty string. Output: %s", output)
+	}
+
+	if actDirPath != expDirPath {
+		t.Errorf("Did not use correct directory path to run hook. Expected: %s, but got %s", expDirPath, actDirPath)
+	}
+
+	if actHookName != expHookName {
+		t.Errorf("Did not use correct hook name. Expected: %s, but got %s", expHookName, actHookName)
+	}
+
+	if *actConfig != *runnerConfig {
+		t.Errorf("Did not use correct captain-githook config. Expected: %v, but got %v", *runnerConfig, *actConfig)
+	}
+}

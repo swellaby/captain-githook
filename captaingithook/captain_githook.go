@@ -24,3 +24,19 @@ func InitializeWithFileName(desiredConfigFileName string) error {
 
 	return nil
 }
+
+// RunHook runs the specified hook
+func RunHook(hookName string) (output string, err error) {
+	dirPath, err := getGitRepoRootDirectoryPath()
+	if err != nil {
+		return "", err
+	}
+
+	config, configErr := getCaptainGithookConfig(dirPath)
+
+	if configErr != nil {
+		return "", configErr
+	}
+
+	return runHookScript(config, hookName, dirPath)
+}

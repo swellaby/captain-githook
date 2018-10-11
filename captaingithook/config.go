@@ -9,6 +9,7 @@ import (
 var jsonMarshallIndent = json.MarshalIndent
 var jsonUnmarshall = json.Unmarshal
 var initializeCaptainGithookConfigFile = initConfigFile
+var getCaptainGithookConfig = getRepoConfig
 var errConfigFileNotFound = errors.New("did not find a captain-githook config file, unable to run hook")
 var errConfigFileParseFailed = errors.New("encountered a fatal error while attempting to parse the captain-githook config file")
 
@@ -34,9 +35,25 @@ type Config struct {
 
 // HooksConfig represents the git hooks configuration
 type HooksConfig struct {
-	PreCommit string `json:"pre-commit,omitempty"`
-	PrePush   string `json:"pre-push,omitempty"`
-	CommitMsg string `json:"commit-msg,omitempty"`
+	ApplyPatchMsg     string `json:"applypatch-msg,omitempty"`
+	PreApplyPatch     string `json:"pre-applypatch,omitempty"`
+	PostApplyPatch    string `json:"post-applypatch,omitempty"`
+	PreCommit         string `json:"pre-commit,omitempty"`
+	PrepareCommitMsg  string `json:"prepare-commit-msg,omitempty"`
+	CommitMsg         string `json:"commit-msg,omitempty"`
+	PostCommit        string `json:"post-commit,omitempty"`
+	PreRebase         string `json:"pre-rebase,omitempty"`
+	PostCheckout      string `json:"post-checkout,omitempty"`
+	PostMerge         string `json:"post-merge,omitempty"`
+	PrePush           string `json:"pre-push,omitempty"`
+	PreReceive        string `json:"pre-receive,omitempty"`
+	Update            string `json:"update,omitempty"`
+	PostReceive       string `json:"post-receive,omitempty"`
+	PostUpdate        string `json:"post-update,omitempty"`
+	PushToCheckout    string `json:"push-to-checkout,omitempty"`
+	PreAutoGc         string `json:"pre-auto-gc,omitempty"`
+	PostRewrite       string `json:"post-rewrite,omitempty"`
+	SendEmailValidate string `json:"sendemail-validate,omitempty"`
 }
 
 func isValidConfigFileName(fileName string) bool {
