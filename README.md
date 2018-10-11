@@ -1,6 +1,6 @@
-# captain-githook
-****** Work In Progress *****  
+# captain-githook 
 git hook utility for Go codebases  
+****** Functional, but still in Beta ****** 
 
 [![Linux CI Badge][linux-ci-badge]][linux-ci-url]
 [![Mac CI Badge][mac-ci-badge]][mac-ci-url]
@@ -8,7 +8,21 @@ git hook utility for Go codebases
 
 [![Test Results Badge][tests-badge]][sonar-tests-url]
 [![Codecov Badge][codecov-badge]][codecov-url]
-[![Sonar Quality Gate Badge][sonar-quality-gate-badge]][sonar-url]
+[![Sonar Quality Gate Badge][sonar-quality-gate-badge]][sonar-url]  
+
+## Installation
+We'll be adding binary releases shortly, but for now you'll need to have your [Go][go-download-url] environment setup and use `go get` i.e.:
+
+```sh
+go get -u github.com/swellaby/captain-githook
+```
+
+## Initialize
+Run the `init` sub-command within your git repository to initialize the git hooks and create the captain-githook config file:
+
+```sh
+captain-githook init
+```
 
  
 [linux-ci-badge]: https://swellaby.visualstudio.com/OpenSource/_apis/build/status/captain-githook/captain-githook-PR-Linux?branchName=master&label=linux%20build
@@ -23,3 +37,4 @@ git hook utility for Go codebases
 [sonar-quality-gate-badge]: https://sonarcloud.io/api/project_badges/measure?project=swellaby%3Acaptain-githook&metric=alert_status
 [sonar-url]: https://sonarcloud.io/dashboard?id=swellaby%3Acaptain-githook
 [sonar-tests-url]: https://sonarcloud.io/component_measures?id=swellaby%3Acaptain-githook&metric=tests
+[go-download-url]: https://golang.org/dl/

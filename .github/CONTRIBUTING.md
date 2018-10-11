@@ -24,13 +24,13 @@ go run ./scripts/setup.go
 ### Testing
 More details coming soon... Run:
 ```sh
-mage test
+task test
 ```
 
 ### Linting
 More details coming soon... Run:
 ```sh
-mage lint
+task lint
 ```
 
 ### Submitting changes
