@@ -18,7 +18,7 @@ func init() {
 	rootCmd.AddCommand(runCmd)
 }
 
-func runHook(cmd *cobra.Command, args []string) error {
+func runHook(*cobra.Command, []string) error {
 	output, err := runGitHook(hookName)
 	if len(output) > 0 {
 		logf("Running hook: '%s'...\n", hookName)

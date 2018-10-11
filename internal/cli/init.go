@@ -19,7 +19,7 @@ func init() {
 	rootCmd.AddCommand(initCmd)
 }
 
-func initialize(cmd *cobra.Command, args []string) error {
+func initialize(*cobra.Command, []string) error {
 	log("Ahoy there matey!")
 	if len(initConfigFileName) < 1 {
 		log("Initializing your repository with the default config file name.")
