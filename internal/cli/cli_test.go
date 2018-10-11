@@ -29,7 +29,7 @@ func TestGetRunnerReturnsRootCommand(t *testing.T) {
 }
 
 func TestRootCommandHasCorrectSubcommands(t *testing.T) {
-	expNumCommands := 1
+	expNumCommands := 2
 	actCommands := rootCmd.Commands()
 	actNumCommands := len(actCommands)
 
@@ -39,5 +39,9 @@ func TestRootCommandHasCorrectSubcommands(t *testing.T) {
 
 	if cmd := actCommands[0]; cmd != initCmd {
 		t.Errorf("Did not get correct init subcommand. Expected: %s, but got: %s", initCmd.Use, cmd.Use)
+	}
+
+	if cmd := actCommands[1]; cmd != runCmd {
+		t.Errorf("Did not get correct run subcommand. Expected: %s, but got: %s", runCmd.Use, cmd.Use)
 	}
 }
