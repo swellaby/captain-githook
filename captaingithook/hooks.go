@@ -38,7 +38,7 @@ hookName=` + "`basename \"$0\"`" + `
 gitParams="$*"
 
 if command -v captain-githook >/dev/null 2>&1; then
-  captain-githook $hookName "$gitParams"
+  captain-githook run --hook $hookName "$gitParams"
 else
   echo "Can't find captain-githook, skipping $hookName hook"
   echo "You can reinstall it using 'go get -u github.com/swellaby/captain-githook' or delete this hook"

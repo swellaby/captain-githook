@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	// "fmt"
+	"path/filepath"
 	"testing"
 )
 
@@ -170,11 +172,87 @@ func TestGetDefaultConfigJSONContentReturnsCorrectValues(t *testing.T) {
 	}
 }
 
-func TestGetRepoConfig(t *testing.T) {
-	config, err := getRepoConfig()
+func TestGetRepoConfigReturnsCorrectErrorWhenConfigFileDoesNotExist(t *testing.T) {
+	origFunc := readFile
+	defer func() { readFile = origFunc }()
+	readFile = func(string) ([]byte, error) {
+		return nil, errors.New("")
+	}
+	config, err := getRepoConfig("")
 
 	if config != nil {
 		t.Errorf("Config was not nil. Config was: %v", config)
+	}
+
+	if err != errConfigFileNotFound {
+		t.Errorf("Did not get correct error. Expected: %s, but got: %s", errConfigFileNotFound, err)
+	}
+}
+
+func TestGetRepoConfigScansForConfigFilesInSpecifiedDirectory(t *testing.T) {
+	repoPath := "/usr/me/foo"
+	expConfigFilePath := filepath.Join(repoPath, defaultConfigFileName)
+	actConfigFilePath := ""
+	origFunc := readFile
+	counter := 0
+	defer func() { readFile = origFunc }()
+	readFile = func(filePath string) ([]byte, error) {
+		if counter == 0 {
+			actConfigFilePath = filePath
+		}
+		counter++
+		return nil, errors.New("")
+	}
+	getRepoConfig(repoPath)
+
+	if actConfigFilePath != expConfigFilePath {
+		t.Errorf("Did not get correct config file path. Expected: %s, but got: %s", expConfigFilePath, actConfigFilePath)
+	}
+}
+
+func TestGetRepoConfigReturnsCorrectErrorWhenConfigFileParsingFails(t *testing.T) {
+	configFileContents := getDefaultJSON()
+	var actFileContents []byte
+	origReadFunc := readFile
+	defer func() { readFile = origReadFunc }()
+	readFile = func(filePath string) ([]byte, error) {
+		return configFileContents, nil
+	}
+	origUnmarshallFunc := jsonUnmarshall
+	defer func() { jsonUnmarshall = origUnmarshallFunc }()
+	jsonUnmarshall = func(contents []byte, v interface{}) error {
+		actFileContents = contents
+		return errors.New("")
+	}
+
+	config, err := getRepoConfig("")
+
+	if config != nil {
+		t.Errorf("Config was not nil. Config was: %v", config)
+	}
+
+	if err != errConfigFileParseFailed {
+		t.Errorf("Did not get correct error. Expected: %s, but got: %s", errConfigFileNotFound, err)
+	}
+
+	if !bytes.Equal(actFileContents, configFileContents) {
+		t.Errorf("Did not pass correct bytes to unmarshall function. Expected: %v, but got: %v", configFileContents, actFileContents)
+	}
+}
+
+func TestGetRepoConfigReturnsCorrectConfig(t *testing.T) {
+	configFileContents := getDefaultJSON()
+	origReadFunc := readFile
+
+	defer func() { readFile = origReadFunc }()
+	readFile = func(filePath string) ([]byte, error) {
+		return configFileContents, nil
+	}
+
+	actConfig, err := getRepoConfig("")
+
+	if *actConfig != *config {
+		t.Errorf("Did not get correct config. Expected: %v, but got: %v", config, actConfig)
 	}
 
 	if err != nil {

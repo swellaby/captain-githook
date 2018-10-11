@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"github.com/swellaby/captain-githook/captaingithook"
 )
@@ -9,8 +8,6 @@ import (
 var initializeCaptainGithook = captaingithook.Initialize
 var initializeCaptainGithookWithConfigName = captaingithook.InitializeWithFileName
 var initConfigFileName string
-var log = fmt.Println
-var logf = fmt.Printf
 
 var initCmd = &cobra.Command{
 	Use:  "init",

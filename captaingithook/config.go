@@ -7,7 +7,11 @@ import (
 )
 
 var jsonMarshallIndent = json.MarshalIndent
+var jsonUnmarshall = json.Unmarshal
 var initializeCaptainGithookConfigFile = initConfigFile
+var getCaptainGithookConfig = getRepoConfig
+var errConfigFileNotFound = errors.New("did not find a captain-githook config file, unable to run hook")
+var errConfigFileParseFailed = errors.New("encountered a fatal error while attempting to parse the captain-githook config file")
 
 var configFileNames = [...]string{
 	"captaingithook.json",
@@ -24,18 +28,32 @@ var configFileNames = [...]string{
 	".captain-githookrc.json",
 }
 
-// var errFailedToFindGitRepo = errors.New("encountered a fatal error while trying to determine the root directory of the git repo")
-
-// Config foo
+// Config represents a captain-githook configuration
 type Config struct {
 	Hooks HooksConfig `json:"hooks,omitempty"`
 }
 
-// HooksConfig bar
+// HooksConfig represents the git hooks configuration
 type HooksConfig struct {
-	PreCommit string `json:"pre-commit,omitempty"`
-	PrePush   string `json:"pre-push,omitempty"`
-	CommitMsg string `json:"commit-msg,omitempty"`
+	ApplyPatchMsg     string `json:"applypatch-msg,omitempty"`
+	PreApplyPatch     string `json:"pre-applypatch,omitempty"`
+	PostApplyPatch    string `json:"post-applypatch,omitempty"`
+	PreCommit         string `json:"pre-commit,omitempty"`
+	PrepareCommitMsg  string `json:"prepare-commit-msg,omitempty"`
+	CommitMsg         string `json:"commit-msg,omitempty"`
+	PostCommit        string `json:"post-commit,omitempty"`
+	PreRebase         string `json:"pre-rebase,omitempty"`
+	PostCheckout      string `json:"post-checkout,omitempty"`
+	PostMerge         string `json:"post-merge,omitempty"`
+	PrePush           string `json:"pre-push,omitempty"`
+	PreReceive        string `json:"pre-receive,omitempty"`
+	Update            string `json:"update,omitempty"`
+	PostReceive       string `json:"post-receive,omitempty"`
+	PostUpdate        string `json:"post-update,omitempty"`
+	PushToCheckout    string `json:"push-to-checkout,omitempty"`
+	PreAutoGc         string `json:"pre-auto-gc,omitempty"`
+	PostRewrite       string `json:"post-rewrite,omitempty"`
+	SendEmailValidate string `json:"sendemail-validate,omitempty"`
 }
 
 func isValidConfigFileName(fileName string) bool {
@@ -97,16 +115,29 @@ func initConfigFile(repoPath, desiredFileName string) error {
 	return nil
 }
 
-func getRepoConfig() (config *Config, err error) {
-	// path, err := getGitRepoRootDirectoryPath()
-	// if err != nil {
-	// 	return nil, errFailedToFindGitRepo
-	// }
+func getRepoConfig(repoRootDirectoryPath string) (config *Config, err error) {
+	var configFileContents []byte
+	foundConfigFile := false
 
-	// for _, configFileName := range configFileNames {
-	// 	configFilePath := filepath.Join(path, configFileName)
-	// 	readFile(configFilePath)
-	// }
+	for _, configFileName := range configFileNames {
+		configFilePath := filepath.Join(repoRootDirectoryPath, configFileName)
 
-	return nil, nil
+		if fileContents, err := readFile(configFilePath); err == nil {
+			configFileContents = fileContents
+			foundConfigFile = true
+			break
+		}
+	}
+
+	if !foundConfigFile {
+		return nil, errConfigFileNotFound
+	}
+
+	parseErr := jsonUnmarshall(configFileContents, &config)
+
+	if parseErr != nil {
+		return nil, errConfigFileParseFailed
+	}
+
+	return config, nil
 }
