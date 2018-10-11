@@ -19,11 +19,19 @@ func TestRunCommandExecutesCorrectly(t *testing.T) {
 	hookName = expHookName
 	expOutput := "hello world"
 	actLogOutput := ""
+	actHookLogfOutput := ""
+	expHookLogfOutput := fmt.Sprintf("Running hook: '%s'...\n", expHookName)
 	expErr := fmt.Errorf("foobar")
 	origLogFunc := log
 	defer func() { log = origLogFunc }()
 	log = func(contents ...interface{}) (int, error) {
 		actLogOutput = fmt.Sprint(contents[0])
+		return 0, nil
+	}
+	origLogfFunc := logf
+	defer func() { logf = origLogfFunc }()
+	logf = func(template string, contents ...interface{}) (int, error) {
+		actHookLogfOutput = fmt.Sprintf(template, contents[0])
 		return 0, nil
 	}
 	origRunFunc := runGitHook
@@ -34,6 +42,10 @@ func TestRunCommandExecutesCorrectly(t *testing.T) {
 	}
 
 	actErr := runHook(nil, nil)
+
+	if actHookLogfOutput != expHookLogfOutput {
+		t.Errorf("Did not get correct hook script output. Expected: %s, but got: %s", expOutput, actLogOutput)
+	}
 
 	if actLogOutput != expOutput {
 		t.Errorf("Did not get correct hook script output. Expected: %s, but got: %s", expOutput, actLogOutput)

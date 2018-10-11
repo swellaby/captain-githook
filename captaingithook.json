@@ -1,5 +1,5 @@
 {
   "hooks": {
-    "pre-commit": "task lint"
+    "pre-commit": "task test"
   }
 }

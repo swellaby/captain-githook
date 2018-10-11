@@ -21,6 +21,7 @@ func init() {
 func runHook(cmd *cobra.Command, args []string) error {
 	output, err := runGitHook(hookName)
 	if len(output) > 0 {
+		logf("Running hook: '%s'...\n", hookName)
 		log(output)
 	}
 	return err
