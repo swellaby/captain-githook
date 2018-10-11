@@ -20,6 +20,8 @@ func init() {
 
 func runHook(cmd *cobra.Command, args []string) error {
 	output, err := runGitHook(hookName)
-	log(output)
+	if len(output) > 0 {
+		log(output)
+	}
 	return err
 }

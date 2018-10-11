@@ -17,7 +17,7 @@ func TestRunCommandExecutesCorrectly(t *testing.T) {
 	actHookName := ""
 	expHookName := "commit-msg"
 	hookName = expHookName
-	expOutput := ""
+	expOutput := "hello world"
 	actLogOutput := ""
 	expErr := fmt.Errorf("foobar")
 	origLogFunc := log
@@ -45,5 +45,28 @@ func TestRunCommandExecutesCorrectly(t *testing.T) {
 
 	if actHookName != expHookName {
 		t.Errorf("Did not use correct hook name. Expected: %s, but got: %s", expHookName, actHookName)
+	}
+}
+
+func TestRunHookDoesNotLogEmptyOutput(t *testing.T) {
+	logCalled := false
+	loggedContent := ""
+	origLogFunc := log
+	defer func() { log = origLogFunc }()
+	log = func(contents ...interface{}) (int, error) {
+		logCalled = true
+		loggedContent = fmt.Sprint(contents[0])
+		return 0, nil
+	}
+	origRunFunc := runGitHook
+	defer func() { runGitHook = origRunFunc }()
+	runGitHook = func(hook string) (string, error) {
+		return "", nil
+	}
+
+	runHook(nil, nil)
+
+	if logCalled {
+		t.Errorf("Log was not supposed to be called but was. Log output: %s", loggedContent)
 	}
 }
