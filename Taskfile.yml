@@ -25,6 +25,7 @@ tasks:
     deps: [install-dev-deps]
     desc: foobar
     cmds:
+      - go install .
       - captain-githook init
     silent: true
 
@@ -45,7 +46,6 @@ tasks:
       - go get github.com/matm/gocov-html
       - go get gotest.tools/gotestsum
       - go get -u golang.org/x/lint/golint
-      - go get -u github.com/swellaby/captain-githook
     silent: true
     vars:
       TMP_DIR:
