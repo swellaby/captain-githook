@@ -3,6 +3,7 @@
     "language": "en",
     "words": [
         "alek",
+        "applypatch",
         "captaingithook",
         "captaingithookrc",
         "circleci",
@@ -11,6 +12,7 @@
         "codebases",
         "foobaroo",
         "githook",
+        "githooks",
         "githookrc",
         "gocov",
         "gocover",
@@ -29,6 +31,7 @@
         "repos",
         "semver",
         "swellaby",
+        "toml",
         "unmarshall",
         "yuki"
     ],

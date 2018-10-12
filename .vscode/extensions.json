@@ -3,6 +3,7 @@
         "ms-vscode.Go",
         "eamodio.gitlens",
         "EditorConfig.EditorConfig",
-        "streetsidesoftware.code-spell-checker"
+        "streetsidesoftware.code-spell-checker",
+        "guardrex.status-bar-tasks"
     ],
 }
