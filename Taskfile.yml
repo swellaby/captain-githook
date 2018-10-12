@@ -19,7 +19,12 @@ tasks:
 
   setup:
     desc: Sets up the workspace.
-    deps: [install-deps, install-dev-deps, create-report-dirs]
+    deps: [install-deps, install-dev-deps, create-report-dirs, install-hooks]
+
+  install-hooks:
+    cms:
+      - captain-githook init
+    silent: true
 
   install-deps:
     desc: Runs go mod download
@@ -38,6 +43,7 @@ tasks:
       - go get github.com/matm/gocov-html
       - go get gotest.tools/gotestsum
       - go get -u golang.org/x/lint/golint
+      - go get -u github.com/swellaby/captain-githook
     silent: true
     vars:
       TMP_DIR:

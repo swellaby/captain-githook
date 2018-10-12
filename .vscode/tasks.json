@@ -17,7 +17,7 @@
         },
         {
             "label": "coverage:open",
-            "command": "task coverage",
+            "command": "task open-cov",
             "type": "shell",
             "group": "test"
         },
