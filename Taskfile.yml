@@ -20,17 +20,9 @@ tasks:
   setup:
     desc: Sets up the workspace.
     deps: [install-deps, install-dev-deps, create-report-dirs]
-    cmds:
-      - go install .
-      - captain-githook init
-
-#   install-hooks:
-#     deps: [install-dev-deps]
-#     desc: foobar
-#     cmds:
-#       - go install .
-#     #   - captain-githook init
-#     silent: true
+    # cmds:
+    #   - go install .
+    #   - captain-githook init
 
   install-deps:
     desc: Runs go mod download
