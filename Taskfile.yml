@@ -22,7 +22,7 @@ tasks:
     deps: [install-deps, install-dev-deps, create-report-dirs, install-hooks]
 
   install-hooks:
-    cms:
+    cmds:
       - captain-githook init
     silent: true
 
