@@ -8,11 +8,19 @@
     },
     "cSpell.enabled": true,
     "go.autocompleteUnimportedPackages": false,
-    "go.vetOnSave": "off",
+    "go.vetOnSave": "workspace",
     "go.testOnSave": false,
     "go.formatTool": "gofmt",
-    "go.buildTags": "mage vscode",
+    "go.buildTags": "vscode",
     "[go]": {
         "editor.formatOnSave": true
+     },
+     "go.coverageOptions": "showBothCoveredAndUncoveredCode",
+     "go.coverageDecorator": {
+         "type": "highlight",
+         "coveredHighlightColor": "rgba(64,128,128,0.5)",
+         "uncoveredHighlightColor": "rgba(128,64,64,0.25)",
+         "coveredGutterStyle": "blockblue",
+         "uncoveredGutterStyle": "slashyellow"
      }
 }
