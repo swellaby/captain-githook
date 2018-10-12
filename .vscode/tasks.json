@@ -1,3 +1,35 @@
 {
-
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "lint",
+            "command": "task lint",
+            "type": "shell"
+        },
+        {
+            "label": "test",
+            "command": "task test",
+            "type": "shell",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+              }
+        },
+        {
+            "label": "coverage:open",
+            "command": "task coverage",
+            "type": "shell",
+            "group": "test"
+        },
+        {
+            "label": "install:captain-githook",
+            "command": "go install .",
+            "type": "shell"
+        },
+        {
+            "label": "clean",
+            "command": "task clean",
+            "type": "shell"
+        }
+    ]
 }
