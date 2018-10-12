@@ -22,6 +22,7 @@ tasks:
     deps: [install-deps, install-dev-deps, create-report-dirs]
     cmds:
       - go install .
+      - captain-githook init
 
 #   install-hooks:
 #     deps: [install-dev-deps]
