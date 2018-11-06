@@ -21,6 +21,11 @@ func TestInitializeCallsDefaultInitMethodWhenConfigFileFlagNotSet(t *testing.T) 
 	actGreeting := ""
 	actLogMessage := ""
 	logCallCount := 0
+	origIsCi := isCI
+	defer func() { isCI = origIsCi }()
+	isCI = func() bool {
+		return false
+	}
 	origFunc := initializeCaptainGithook
 	defer func() { initializeCaptainGithook = origFunc }()
 	initializeCaptainGithook = func() error {
@@ -61,7 +66,11 @@ func TestInitializeCallsDefaultInitMethodWhenConfigFileFlagSet(t *testing.T) {
 	expLogMessage := fmt.Sprintf("Initializing your repository with the your requested config file name: '%s'.", expFileName)
 	actGreeting := ""
 	actLogMessage := ""
-
+	origIsCi := isCI
+	defer func() { isCI = origIsCi }()
+	isCI = func() bool {
+		return false
+	}
 	initConfigFileName = expFileName
 	origFunc := initializeCaptainGithookWithConfigName
 	defer func() { initializeCaptainGithookWithConfigName = origFunc }()
@@ -95,6 +104,45 @@ func TestInitializeCallsDefaultInitMethodWhenConfigFileFlagSet(t *testing.T) {
 
 	if actGreeting != expGreeting {
 		t.Errorf("Did not get correct greeting. Expected: %s, but got: %s", expGreeting, string(actGreeting))
+	}
+
+	if actLogMessage != expLogMessage {
+		t.Errorf("Did not get correct log message. Expected: %s, but got: %s", expLogMessage, actLogMessage)
+	}
+}
+
+func TestShouldNotInitializeHooksWhenCIDetected(t *testing.T) {
+	actLogMessage := ""
+	expLogMessage := "CI environment detected. Skipping git hook install."
+	initFuncCalled := false
+	origIsCi := isCI
+	defer func() { isCI = origIsCi }()
+	isCI = func() bool {
+		return true
+	}
+	origLogFunc := log
+	defer func() { log = origLogFunc }()
+	log = func(contents ...interface{}) (int, error) {
+		actLogMessage = fmt.Sprint(contents[0])
+		return 0, nil
+	}
+	origInitNameFunc := initializeCaptainGithookWithConfigName
+	defer func() { initializeCaptainGithookWithConfigName = origInitNameFunc }()
+	initializeCaptainGithookWithConfigName = func(string) error {
+		initFuncCalled = true
+		return nil
+	}
+	origInitFunc := initializeCaptainGithook
+	defer func() { initializeCaptainGithook = origInitFunc }()
+	initializeCaptainGithookWithConfigName = func(string) error {
+		initFuncCalled = true
+		return nil
+	}
+
+	initialize(nil, nil)
+
+	if initFuncCalled {
+		t.Error("Initialization function should not have been called, but it was")
 	}
 
 	if actLogMessage != expLogMessage {
