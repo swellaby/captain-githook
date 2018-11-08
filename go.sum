@@ -11,3 +11,4 @@ github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnIn
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/swellaby/ci-detective v0.0.0-20181104023850-a40a44cae568 h1:j9pGKL0c7wchxK/ePgVG78y99GijnRWOKR+gAadZnGA=
 github.com/swellaby/ci-detective v0.0.0-20181104023850-a40a44cae568/go.mod h1:TtR7ki9KZBqZQsd2ccLL5z8Y5kEMxzNR55IVg7V4JN4=
+github.com/swellaby/ci-detective v1.0.1/go.mod h1:TtR7ki9KZBqZQsd2ccLL5z8Y5kEMxzNR55IVg7V4JN4=
