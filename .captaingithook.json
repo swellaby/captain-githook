@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "pre-commit": "task test",
+    "pre-push": "task check-gofmt"
+  }
+}

@@ -13,7 +13,7 @@ func TestWriteFileUsesCorrectValues(t *testing.T) {
 	var actualPerm os.FileMode
 	expectedPerm := os.ModePerm
 	expectedFileName := "/usr/foo/bar.txt"
-	data := []byte("foobaroo")
+	data := []byte("fooBarRoo")
 	expectedData := []byte(data)
 
 	ioWrite = func(filename string, data []byte, perm os.FileMode) error {
@@ -45,7 +45,7 @@ func TestWriteFileUsesCorrectValues(t *testing.T) {
 func TestReadFileUsesCorrectValues(t *testing.T) {
 	var actualFilePath string
 	expectedFilePath := "/usr/foo/bar.txt"
-	expectedData := []byte("foobaroo")
+	expectedData := []byte("fooBarRoo")
 
 	ioRead = func(filepath string) ([]byte, error) {
 		actualFilePath = filepath
