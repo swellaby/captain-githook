@@ -13,3 +13,4 @@ github.com/swellaby/ci-detective v0.0.0-20181104023850-a40a44cae568 h1:j9pGKL0c7
 github.com/swellaby/ci-detective v0.0.0-20181104023850-a40a44cae568/go.mod h1:TtR7ki9KZBqZQsd2ccLL5z8Y5kEMxzNR55IVg7V4JN4=
 github.com/swellaby/ci-detective v1.0.1 h1:Jj5b1A3yds5AtqEZo4aV2en9jUWolDSBFiQDgYWfMfs=
 github.com/swellaby/ci-detective v1.0.1/go.mod h1:TtR7ki9KZBqZQsd2ccLL5z8Y5kEMxzNR55IVg7V4JN4=
+github.com/swellaby/ci-detective v1.0.3/go.mod h1:TtR7ki9KZBqZQsd2ccLL5z8Y5kEMxzNR55IVg7V4JN4=
