@@ -2,6 +2,7 @@ package captaingithook
 
 import (
 	"errors"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -18,14 +19,7 @@ func TestGetRootDirectoryPathHandlesErrorCorrectly(t *testing.T) {
 	defer func() { runCommand = origRunCommand }()
 
 	_, err := getRootDirectoryPath()
-
-	if err == nil {
-		t.Errorf("Expected error but got nil")
-	}
-
-	if actualErrMsg := err.Error(); actualErrMsg != expectedErrMsg {
-		t.Errorf("Incorrect error message. Expected: %s, but got: %s", expectedErrMsg, actualErrMsg)
-	}
+	assert.Error(t, err, expectedErrMsg)
 }
 
 func TestGetRootDirectoryPathHandlesEmptyDirectoryCorrectly(t *testing.T) {
@@ -37,18 +31,8 @@ func TestGetRootDirectoryPathHandlesEmptyDirectoryCorrectly(t *testing.T) {
 	defer func() { runCommand = origRunCommand }()
 
 	gitDir, err := getRootDirectoryPath()
-
-	if err == nil {
-		t.Errorf("Expected error but got nil")
-	}
-
-	if gitDir != "" {
-		t.Errorf("Expected empty string for directory but got: %s", gitDir)
-	}
-
-	if actualErrMsg := err.Error(); actualErrMsg != expectedErrMsg {
-		t.Errorf("Incorrect error message. Expected: %s, but got: %s", expectedErrMsg, actualErrMsg)
-	}
+	assert.Error(t, err, expectedErrMsg)
+	assert.Equal(t, "", gitDir)
 }
 
 func TestGetGitRepoRootDirectoryPathReturnsDirectoryCorrectly(t *testing.T) {
@@ -60,14 +44,8 @@ func TestGetGitRepoRootDirectoryPathReturnsDirectoryCorrectly(t *testing.T) {
 	defer func() { runCommand = origRunCommand }()
 
 	gitDir, err := getGitRepoRootDirectoryPath()
-
-	if err != nil {
-		t.Errorf("Expected nil for error but got: %s", err)
-	}
-
-	if gitDir != expectedGitDir {
-		t.Errorf("Incorrect git directory. Expected: %s, but got: %s", expectedGitDir, gitDir)
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, expectedGitDir, gitDir)
 }
 
 func TestGetGitRepoRootDirectoryUsesCorrectCommand(t *testing.T) {
@@ -79,10 +57,7 @@ func TestGetGitRepoRootDirectoryUsesCorrectCommand(t *testing.T) {
 	}
 	defer func() { runCommand = origRunCommand }()
 	getGitRepoRootDirectoryPath()
-
-	if actualCmd != expGitRootCommand {
-		t.Errorf("Used incorrect command. Expected: %s, but got: %s", expGitRootCommand, actualCmd)
-	}
+	assert.Equal(t, expGitRootCommand, actualCmd, "Used incorrect command. Expected: %s, but got: %s", expGitRootCommand, actualCmd)
 }
 
 func TestGetHooksDirectoryReturnsErrorWhenCommandFails(t *testing.T) {
@@ -95,14 +70,7 @@ func TestGetHooksDirectoryReturnsErrorWhenCommandFails(t *testing.T) {
 	defer func() { runCommand = origRunCommand }()
 
 	_, err := getHooksDirectory()
-
-	if err == nil {
-		t.Errorf("Expected error but got nil")
-	}
-
-	if actualErrMsg := err.Error(); actualErrMsg != expectedErrMsg {
-		t.Errorf("Incorrect error message. Expected: %s, but got: %s", expectedErrMsg, actualErrMsg)
-	}
+	assert.Error(t, err, expectedErrMsg)
 }
 
 func TestGetHooksDirectoryUsesCorrectCommand(t *testing.T) {
@@ -114,8 +82,5 @@ func TestGetHooksDirectoryUsesCorrectCommand(t *testing.T) {
 	}
 	defer func() { runCommand = origRunCommand }()
 	getHooksDirectory()
-
-	if actualCmd != expGitHooksCommand {
-		t.Errorf("Used incorrect command. Expected: %s, but got: %s", expGitHooksCommand, actualCmd)
-	}
+	assert.Equal(t, expGitHooksCommand, actualCmd, "Used incorrect command. Expected: %s, but got: %s", expGitHooksCommand, actualCmd)
 }

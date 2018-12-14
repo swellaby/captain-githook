@@ -1,6 +1,7 @@
 package captaingithook
 
 import (
+	"github.com/stretchr/testify/assert"
 	"os/exec"
 	"testing"
 )
@@ -25,14 +26,8 @@ func TestGetRunnerInfoReturnsCorrectValueOnWindows(t *testing.T) {
 	const expectedRunner = "cmd.exe"
 	const expectedRunnerArg = "/C"
 	runner, runnerArg := getRunnerInfo("windows")
-
-	if runner != expectedRunner {
-		t.Errorf("Runner was incorrect. Expected: %s, but got: %s.", expectedRunner, runner)
-	}
-
-	if runnerArg != expectedRunnerArg {
-		t.Errorf("Runner Arg was incorrect. Expected: %s, but got: %s.", expectedRunnerArg, runnerArg)
-	}
+	assert.Equal(t, expectedRunner, runner)
+	assert.Equal(t, expectedRunnerArg, runnerArg)
 }
 
 func TestGetRunnerInfoReturnsCorrectValueOnNonWindows(t *testing.T) {
@@ -46,14 +41,8 @@ func TestGetRunnerInfoReturnsCorrectValueOnNonWindows(t *testing.T) {
 
 	for _, os := range nonWindowsOperatingSystems {
 		runner, runnerArg := getRunnerInfo(os)
-
-		if runner != expectedRunner {
-			t.Errorf("Runner was incorrect for OS: %s. Expected: %s, but got: %s.", os, expectedRunner, runner)
-		}
-
-		if runnerArg != expectedRunnerArg {
-			t.Errorf("Runner Arg was incorrect for OS: %s. Expected: %s, but got: %s.", os, expectedRunnerArg, runnerArg)
-		}
+		assert.Equal(t, expectedRunner, runner, "Runner was incorrect for OS: %s. Expected: %s, but got: %s.", os, expectedRunner, runner)
+		assert.Equal(t, expectedRunnerArg, runnerArg, "Runner Arg was incorrect for OS: %s. Expected: %s, but got: %s.", os, expectedRunnerArg, runnerArg)
 	}
 }
 
@@ -66,18 +55,10 @@ func TestNewCommandUsesDirectoryWhenSpecified(t *testing.T) {
 		return mockCmd
 	}
 	defer func() { osCommand = exec.Command }()
-
-	if newCommand(dir, echoScript) == nil {
-		t.Errorf("Got a nil exec.Command object.")
-	}
-
-	if mockCmd.Dir != dir {
-		t.Errorf("Target directory for command was incorrect. Expected: %s, but got: %s.", dir, mockCmd.Dir)
-	}
-
-	if numArgs := len(mockCmd.Args); numArgs != expNumArgs {
-		t.Errorf("Did not get correct number of command args. Expected: %d, but got: %d", expNumArgs, numArgs)
-	}
+	assert.NotNil(t, newCommand(dir, echoScript))
+	assert.Equal(t, dir, mockCmd.Dir, "Target directory for command was incorrect. Expected: %s, but got: %s.", dir, mockCmd.Dir)
+	numArgs := len(mockCmd.Args)
+	assert.Equal(t, expNumArgs, numArgs, "Did not get correct number of command args. Expected: %d, but got: %d", expNumArgs, numArgs)
 }
 
 func TestNewCommandUsesCallingProcDirectoryWhenNotSpecified(t *testing.T) {
@@ -89,18 +70,10 @@ func TestNewCommandUsesCallingProcDirectoryWhenNotSpecified(t *testing.T) {
 		return mockCmd
 	}
 	defer func() { osCommand = exec.Command }()
-
-	if newCommand(dir, echoScript) == nil {
-		t.Errorf("Got a nil exec.Command object.")
-	}
-
-	if mockCmd.Dir != dir {
-		t.Errorf("Target directory for command was incorrect. Expected: %s, but got: %s.", dir, mockCmd.Dir)
-	}
-
-	if numArgs := len(mockCmd.Args); numArgs != expNumArgs {
-		t.Errorf("Did not get correct number of command args. Expected: %d, but got: %d", expNumArgs, numArgs)
-	}
+	assert.NotNil(t, newCommand(dir, echoScript))
+	assert.Equal(t, dir, mockCmd.Dir, "Target directory for command was incorrect. Expected: %s, but got: %s.", dir, mockCmd.Dir)
+	numArgs := len(mockCmd.Args)
+	assert.Equal(t, expNumArgs, numArgs, "Did not get correct number of command args. Expected: %d, but got: %d", expNumArgs, numArgs)
 }
 
 func TestRunReturnsCorrectResults(t *testing.T) {
@@ -113,12 +86,6 @@ func TestRunReturnsCorrectResults(t *testing.T) {
 	defer func() { createCommand = newCommand }()
 
 	result, err := run("")
-
-	if err != nil {
-		t.Errorf("Err was not nil. Got: %s.", err)
-	}
-
-	if result != string(mockBytes) {
-		t.Errorf("Result from run was incorrect. Expected: %s, but got: %s.", result, string(mockBytes))
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, string(mockBytes), result, "Result from run was incorrect. Expected: %s, but got: %s.", result, string(mockBytes))
 }

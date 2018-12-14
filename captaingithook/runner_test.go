@@ -3,6 +3,7 @@ package captaingithook
 import (
 	"errors"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -76,28 +77,15 @@ var hookScriptTests = []struct {
 
 func TestGetConfiguredHooksScriptReturnsCorrectErrorOnNilHooksConfig(t *testing.T) {
 	hookScript, err := getConfiguredHookScript(nil, "foobar")
-
-	if hookScript != "" {
-		t.Errorf("Did not get correct hook script value. Expected empty string, but got: %s", hookScript)
-	}
-
-	if err != errNilHooksConfig {
-		t.Errorf("Did not get correct error message. Expected: %s, but got: %s", errNilHooksConfig, err)
-	}
+	assert.Equal(t, "", hookScript)
+	assert.Equal(t, errNilHooksConfig, err)
 }
 
 func TestGetConfiguredHookScriptReturnsCorrectErrorOnUnknownHook(t *testing.T) {
 	hookName := "foo"
 	hookScript, err := getConfiguredHookScript(runnerHooks, hookName)
-	expErrMsg := fmt.Errorf("unknown hook name: %s", hookName).Error()
-
-	if hookScript != "" {
-		t.Errorf("Did not get correct hook script value. Expected empty string, but got: %s", hookScript)
-	}
-
-	if errMsg := err.Error(); errMsg != expErrMsg {
-		t.Errorf("Did not get correct error message. Expected: %s, but got: %s", expErrMsg, errMsg)
-	}
+	assert.Equal(t, "", hookScript)
+	assert.Error(t, fmt.Errorf("unknown hook name: %s", hookName), err)
 }
 
 func TestGetConfiguredHookReturnsCorrectScriptForHook(t *testing.T) {
@@ -105,40 +93,21 @@ func TestGetConfiguredHookReturnsCorrectScriptForHook(t *testing.T) {
 		expHookScript := hst.expHookScript
 		hook := hst.hookName
 		actHookScript, err := getConfiguredHookScript(runnerHooks, hook)
-
-		if err != nil {
-			t.Errorf("Error was not nil for hook: %s. Error: %s", hook, err)
-		}
-
-		if actHookScript != expHookScript {
-			t.Errorf("Did not get correct script for hook: %s. Expected: %s, but got: %s", hook, expHookScript, actHookScript)
-		}
+		assert.Nil(t, err)
+		assert.Equal(t, expHookScript, actHookScript, "Did not get correct script for hook: %s. Expected: %s, but got: %s", hook, expHookScript, actHookScript)
 	}
 }
 
 func TestRunHookReturnsCorrectErrorWhenConfigIsNil(t *testing.T) {
 	output, err := runHook(nil, "", "")
-
-	if err != errNilConfig {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", errNilConfig, err)
-	}
-
-	if output != "" {
-		t.Errorf("Output was not an empty string. Output: %s", output)
-	}
+	assert.Equal(t, errNilConfig, err)
+	assert.Equal(t, "", output)
 }
 
 func TestRunHookReturnsCorrectErrorWhenScriptCannotBeDetermined(t *testing.T) {
-	expErrMsg := fmt.Errorf("unknown hook name: %s", "").Error()
 	output, err := runHook(&Config{}, "", "")
-
-	if errMsg := err.Error(); errMsg != expErrMsg {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", expErrMsg, errMsg)
-	}
-
-	if output != "" {
-		t.Errorf("Output was not an empty string. Output: %s", output)
-	}
+	assert.Equal(t, "", output)
+	assert.Error(t, fmt.Errorf("unknown hook name: %s", ""), err)
 }
 
 func TestRunHookInvokesScriptCorrectly(t *testing.T) {
@@ -156,20 +125,8 @@ func TestRunHookInvokesScriptCorrectly(t *testing.T) {
 	}
 
 	output, err := runHook(runnerConfig, "pre-commit", expDir)
-
-	if output != expOutput {
-		t.Errorf("Did not get correct output. Expected: %s, but got: %s", expOutput, output)
-	}
-
-	if err != expErr {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", expErr, err)
-	}
-
-	if actDir != expDir {
-		t.Errorf("Did not use correct root directory. Expected: %s, but got: %s", expDir, actDir)
-	}
-
-	if actCmd != preCommitScript {
-		t.Errorf("Did not use correct hook script. Expected: %s, but got: %s", preCommitScript, actCmd)
-	}
+	assert.Equal(t, expOutput, output)
+	assert.Equal(t, expErr, err)
+	assert.Equal(t, expDir, actDir)
+	assert.Equal(t, preCommitScript, actCmd, "Did not use correct hook script. Expected: %s, but got: %s", preCommitScript, actCmd)
 }
