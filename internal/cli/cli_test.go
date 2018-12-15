@@ -1,47 +1,26 @@
 package cli
 
 import (
+	"github.com/stretchr/testify/assert"
 	"github.com/swellaby/captain-githook/captaingithook"
 	"testing"
 )
 
 func TestRootCommandConfiguresUseCorrectly(t *testing.T) {
-	expUse := "captain-githook"
-	use := rootCmd.Use
-	if use != expUse {
-		t.Errorf("Did not set correct use value for root command. Expected: %s, but got: %s", expUse, use)
-	}
+	assert.Equal(t, "captain-githook", rootCmd.Use)
 }
 
 func TestRootCommandConfiguresVersionCorrectly(t *testing.T) {
-	expVersion := captaingithook.Version
-	version := rootCmd.Version
-	if version != expVersion {
-		t.Errorf("Did not set correct version. Expected: %s, but got: %s", expVersion, version)
-	}
+	assert.Equal(t, captaingithook.Version, rootCmd.Version)
 }
 
 func TestGetRunnerReturnsRootCommand(t *testing.T) {
-	actRunner := GetRunner()
-	if actRunner != rootCmd {
-		t.Errorf("Did not get correct runner. Expected: %v, but got: %v", rootCmd, actRunner)
-	}
+	assert.Equal(t, rootCmd, GetRunner())
 }
 
 func TestRootCommandHasCorrectSubcommands(t *testing.T) {
-	expNumCommands := 2
 	actCommands := rootCmd.Commands()
-	actNumCommands := len(actCommands)
-
-	if actNumCommands != expNumCommands {
-		t.Errorf("Did not get correct number of subcommands. Expected: %d, but got: %d", expNumCommands, actNumCommands)
-	}
-
-	if cmd := actCommands[0]; cmd != initCmd {
-		t.Errorf("Did not get correct init subcommand. Expected: %s, but got: %s", initCmd.Use, cmd.Use)
-	}
-
-	if cmd := actCommands[1]; cmd != runCmd {
-		t.Errorf("Did not get correct run subcommand. Expected: %s, but got: %s", runCmd.Use, cmd.Use)
-	}
+	assert.Equal(t, 2, len(actCommands))
+	assert.Equal(t, initCmd, actCommands[0])
+	assert.Equal(t, runCmd, actCommands[1])
 }

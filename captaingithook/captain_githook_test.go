@@ -2,6 +2,7 @@ package captaingithook
 
 import (
 	"errors"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -12,12 +13,7 @@ func TestInitializeReturnsCorrectErrorOnUnknownGitRoot(t *testing.T) {
 	getGitRepoRootDirectoryPath = func() (string, error) {
 		return "", errors.New(expectedErrMsg)
 	}
-
-	err := Initialize()
-
-	if actErrMsg := err.Error(); actErrMsg != expectedErrMsg {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", expectedErrMsg, actErrMsg)
-	}
+	assert.Error(t, Initialize(), expectedErrMsg)
 }
 
 func TestInitializeReturnsCorrectErrorOnFailedConfigCreation(t *testing.T) {
@@ -33,11 +29,7 @@ func TestInitializeReturnsCorrectErrorOnFailedConfigCreation(t *testing.T) {
 		return errors.New(expectedErrMsg)
 	}
 
-	err := Initialize()
-
-	if actErrMsg := err.Error(); actErrMsg != expectedErrMsg {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", expectedErrMsg, actErrMsg)
-	}
+	assert.Error(t, Initialize(), expectedErrMsg)
 }
 
 func TestInitializeReturnsCorrectErrorOnFailedHookFileCreation(t *testing.T) {
@@ -57,9 +49,7 @@ func TestInitializeReturnsCorrectErrorOnFailedHookFileCreation(t *testing.T) {
 		return errInvalidGitHooksDirectoryPath
 	}
 
-	if err := Initialize(); err != errInvalidGitHooksDirectoryPath {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", errInvalidGitHooksDirectoryPath, err)
-	}
+	assert.Equal(t, errInvalidGitHooksDirectoryPath, Initialize())
 }
 
 func TestInitializeCorrectlyAddsConfigAndHookFiles(t *testing.T) {
@@ -79,11 +69,7 @@ func TestInitializeCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 		return nil
 	}
 
-	err := Initialize()
-
-	if err != nil {
-		t.Errorf("Error was not nil. Error value: %s", err)
-	}
+	assert.Nil(t, Initialize())
 }
 
 func TestInitializeWithFileNameReturnsCorrectErrorOnUnknownGitRoot(t *testing.T) {
@@ -94,11 +80,7 @@ func TestInitializeWithFileNameReturnsCorrectErrorOnUnknownGitRoot(t *testing.T)
 		return "", errors.New(expectedErrMsg)
 	}
 
-	err := InitializeWithFileName("")
-
-	if actErrMsg := err.Error(); actErrMsg != expectedErrMsg {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", expectedErrMsg, actErrMsg)
-	}
+	assert.Error(t, InitializeWithFileName(""), expectedErrMsg)
 }
 
 func TestInitializeWithFileNameReturnsCorrectErrorOnFailedConfigCreation(t *testing.T) {
@@ -114,11 +96,7 @@ func TestInitializeWithFileNameReturnsCorrectErrorOnFailedConfigCreation(t *test
 		return errors.New(expectedErrMsg)
 	}
 
-	err := InitializeWithFileName("")
-
-	if actErrMsg := err.Error(); actErrMsg != expectedErrMsg {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", expectedErrMsg, actErrMsg)
-	}
+	assert.Error(t, InitializeWithFileName(""), expectedErrMsg)
 }
 
 func TestInitializeWithFileNameReturnsCorrectErrorOnFailedHookFileCreation(t *testing.T) {
@@ -138,11 +116,7 @@ func TestInitializeWithFileNameReturnsCorrectErrorOnFailedHookFileCreation(t *te
 		return errInvalidGitHooksDirectoryPath
 	}
 
-	err := InitializeWithFileName("")
-
-	if err != errInvalidGitHooksDirectoryPath {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", errInvalidGitHooksDirectoryPath, err)
-	}
+	assert.Equal(t, errInvalidGitHooksDirectoryPath, InitializeWithFileName(""))
 }
 
 func TestInitializeWithFileNameCorrectlyAddsConfigAndHookFiles(t *testing.T) {
@@ -164,15 +138,8 @@ func TestInitializeWithFileNameCorrectlyAddsConfigAndHookFiles(t *testing.T) {
 		return nil
 	}
 	expFileName := ".captaingithookrc.json"
-	err := InitializeWithFileName(expFileName)
-
-	if err != nil {
-		t.Errorf("Error was not nil. Error value: %s", err)
-	}
-
-	if expFileName != actualFileName {
-		t.Errorf("Did not get correct config file name. Expected: %s, but got %s", expFileName, actualFileName)
-	}
+	assert.Nil(t, InitializeWithFileName(expFileName))
+	assert.Equal(t, expFileName, actualFileName, "Did not get correct config file name. Expected: %s, but got %s", expFileName, actualFileName)
 }
 
 func TestRunHookReturnsCorrectErrorOnUnknownGitRoot(t *testing.T) {
@@ -184,14 +151,8 @@ func TestRunHookReturnsCorrectErrorOnUnknownGitRoot(t *testing.T) {
 	}
 
 	output, err := RunHook("")
-
-	if err != expectedErr {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", expectedErr, err)
-	}
-
-	if output != "" {
-		t.Errorf("Output was not the expected empty string. Output: %s", output)
-	}
+	assert.Equal(t, expectedErr, err)
+	assert.Equal(t, "", output, "Output was not the expected empty string. Output: %s", output)
 }
 
 func TestRunHookReturnsCorrectErrorOnConfigLoadError(t *testing.T) {
@@ -211,18 +172,9 @@ func TestRunHookReturnsCorrectErrorOnConfigLoadError(t *testing.T) {
 	}
 
 	output, err := RunHook("")
-
-	if err != expError {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", expError, err)
-	}
-
-	if output != "" {
-		t.Errorf("Output was not the expected empty string. Output: %s", output)
-	}
-
-	if actDirPath != expDirPath {
-		t.Errorf("Did not use correct directory path to locate config. Expected: %s, but got %s", expDirPath, actDirPath)
-	}
+	assert.Equal(t, expError, err)
+	assert.Equal(t, "", output, "Output was not the expected empty string. Output: %s", output)
+	assert.Equal(t, expDirPath, actDirPath, "Did not use correct directory path to locate config. Expected: %s, but got %s", expDirPath, actDirPath)
 }
 
 func TestRunHookReturnsCorrectResultOfScriptExecution(t *testing.T) {
@@ -253,24 +205,9 @@ func TestRunHookReturnsCorrectResultOfScriptExecution(t *testing.T) {
 	}
 
 	output, err := RunHook(expHookName)
-
-	if err != expError {
-		t.Errorf("Did not get correct error. Expected: %s, but got %s", expError, err)
-	}
-
-	if output != expOutput {
-		t.Errorf("Output was not the expected empty string. Output: %s", output)
-	}
-
-	if actDirPath != expDirPath {
-		t.Errorf("Did not use correct directory path to run hook. Expected: %s, but got %s", expDirPath, actDirPath)
-	}
-
-	if actHookName != expHookName {
-		t.Errorf("Did not use correct hook name. Expected: %s, but got %s", expHookName, actHookName)
-	}
-
-	if *actConfig != *runnerConfig {
-		t.Errorf("Did not use correct captain-githook config. Expected: %v, but got %v", *runnerConfig, *actConfig)
-	}
+	assert.Equal(t, expError, err)
+	assert.Equal(t, expOutput, output, "Output was not the expected value of: %s, but instead was: %s", expOutput, output)
+	assert.Equal(t, expDirPath, actDirPath, "Did not use correct directory path to locate config. Expected: %s, but got %s", expDirPath, actDirPath)
+	assert.Equal(t, expHookName, actHookName, "Did not use correct hook name. Expected: %s, but got %s", expHookName, actHookName)
+	assert.Equal(t, *runnerConfig, *actConfig, "Did not use correct captain-githook config. Expected: %v, but got %v", *runnerConfig, *actConfig)
 }

@@ -1,10 +1,9 @@
 package captaingithook
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
-	// "fmt"
+	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"testing"
 )
@@ -23,20 +22,11 @@ func getDefaultJSON() []byte {
 
 func TestIsValidConfigFileNameReturnsFalseOnInvalidName(t *testing.T) {
 	fileName := "captaingithook.yml"
-	isValid := isValidConfigFileName(fileName)
-
-	if isValid {
-		t.Errorf("Validity was wrong for file name: %s. Expected: true, but got: %t.", fileName, isValid)
-	}
+	assert.False(t, isValidConfigFileName(fileName), "File name: %s should have been invalid", fileName)
 }
 
 func TestIsValidConfigFileNameReturnsFalseOnEmptyName(t *testing.T) {
-	fileName := ""
-	isValid := isValidConfigFileName(fileName)
-
-	if isValid {
-		t.Errorf("Validity was wrong for file name: %s. Expected: true, but got: %t.", fileName, isValid)
-	}
+	assert.False(t, isValidConfigFileName(""), "Empty string for file name should have been invalid")
 }
 
 func TestIsValidConfigFileNameReturnsTrueOnValidNames(t *testing.T) {
@@ -56,11 +46,7 @@ func TestIsValidConfigFileNameReturnsTrueOnValidNames(t *testing.T) {
 	}
 
 	for _, fileName := range validConfigFileNames {
-		isValid := isValidConfigFileName(fileName)
-
-		if !isValid {
-			t.Errorf("Validity was wrong for file name: %s. Expected: true, but got: %t.", fileName, isValid)
-		}
+		assert.True(t, isValidConfigFileName(fileName), "File name: %s should have been valid", fileName)
 	}
 }
 
@@ -73,11 +59,7 @@ func TestConfigFileExistsReturnsFalseWhenNoFilesFound(t *testing.T) {
 		return "", nil
 	}
 	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
-	foundFile := configFileExists("")
-
-	if foundFile {
-		t.Errorf("Got wrong result for found config file. Expected %t, but got %t", false, foundFile)
-	}
+	assert.False(t, configFileExists(""))
 }
 
 func TestConfigFileExistsReturnsTrueWhenFileFound(t *testing.T) {
@@ -89,11 +71,7 @@ func TestConfigFileExistsReturnsTrueWhenFileFound(t *testing.T) {
 		return "", nil
 	}
 	defer func() { getGitRepoRootDirectoryPath = origGetRepoRoot }()
-	foundFile := configFileExists("")
-
-	if !foundFile {
-		t.Errorf("Got wrong result for found config file. Expected %t, but got %t", true, foundFile)
-	}
+	assert.True(t, configFileExists("captaingithook.json"))
 }
 
 func TestInitConfigFileUsesCorrectDefault(t *testing.T) {
@@ -109,14 +87,9 @@ func TestInitConfigFileUsesCorrectDefault(t *testing.T) {
 	}
 
 	initConfigFile("", "")
-
-	if actualFileName != defaultConfigFileName {
-		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
-	}
-
-	if !bytes.Equal(actualData, expectedData) {
-		t.Errorf("Attempted to create wrong config file contents. Expected: %s, but got: %s.", expectedData, actualData)
-	}
+	assert.Equal(t, defaultConfigFileName, actualFileName)
+	assertionErrMsg := "Attempted to create wrong config file contents. Expected: %s, but got: %s."
+	assert.Equal(t, expectedData, actualData, assertionErrMsg, expectedData, actualData)
 }
 
 func TestInitConfigFileUsesSpecifiedFileName(t *testing.T) {
@@ -134,14 +107,9 @@ func TestInitConfigFileUsesSpecifiedFileName(t *testing.T) {
 	desiredFileName := ".captain-githookrc"
 
 	initConfigFile("", desiredFileName)
-
-	if actualFileName != desiredFileName {
-		t.Errorf("Attempted to create wrong config file name. Expected: %s, but got: %s.", defaultConfigFileName, actualFileName)
-	}
-
-	if !bytes.Equal(actualData, expectedData) {
-		t.Errorf("Attempted to create wrong config file contents. Expected: %s, but got: %s.", expectedData, actualData)
-	}
+	assert.Equal(t, desiredFileName, actualFileName)
+	assertionErrMsg := "Attempted to create wrong config file contents. Expected: %s, but got: %s."
+	assert.Equal(t, expectedData, actualData, assertionErrMsg, expectedData, actualData)
 }
 
 func TestInitConfigFileReturnsCorrectErrorOnWriteError(t *testing.T) {
@@ -152,24 +120,14 @@ func TestInitConfigFileReturnsCorrectErrorOnWriteError(t *testing.T) {
 	writeFile = func(fileName string, data []byte) error {
 		return errors.New(errMsgDetails)
 	}
-
-	err := initConfigFile("", ".captaingithookrc.json")
-	if err.Error() != expectedErrMsg {
-		t.Errorf("Got wrong error message. Expected: %s, but got: %s.", expectedErrMsg, err.Error())
-	}
+	assert.Error(t, initConfigFile("", ".captaingithookrc.json"), expectedErrMsg)
 }
 
 func TestGetDefaultConfigJSONContentReturnsCorrectValues(t *testing.T) {
 	expectedJSONContent := getDefaultJSON()
 	actualJSONContent, err := getDefaultConfigJSONContent()
-
-	if err != nil {
-		t.Errorf("Error should have been nil but was not. Error was: %s", err)
-	}
-
-	if !bytes.Equal(expectedJSONContent, actualJSONContent) {
-		t.Errorf("Did not get correct JSON data for default config object. Expected: %s, but got: %s", string(expectedJSONContent), string(actualJSONContent))
-	}
+	assert.Nil(t, err)
+	assert.Equal(t, expectedJSONContent, actualJSONContent)
 }
 
 func TestGetRepoConfigReturnsCorrectErrorWhenConfigFileDoesNotExist(t *testing.T) {
@@ -179,14 +137,8 @@ func TestGetRepoConfigReturnsCorrectErrorWhenConfigFileDoesNotExist(t *testing.T
 		return nil, errors.New("")
 	}
 	config, err := getRepoConfig("")
-
-	if config != nil {
-		t.Errorf("Config was not nil. Config was: %v", config)
-	}
-
-	if err != errConfigFileNotFound {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", errConfigFileNotFound, err)
-	}
+	assert.Nil(t, config)
+	assert.Equal(t, errConfigFileNotFound, err)
 }
 
 func TestGetRepoConfigScansForConfigFilesInSpecifiedDirectory(t *testing.T) {
@@ -204,10 +156,8 @@ func TestGetRepoConfigScansForConfigFilesInSpecifiedDirectory(t *testing.T) {
 		return nil, errors.New("")
 	}
 	getRepoConfig(repoPath)
-
-	if actConfigFilePath != expConfigFilePath {
-		t.Errorf("Did not get correct config file path. Expected: %s, but got: %s", expConfigFilePath, actConfigFilePath)
-	}
+	assertionErrMsg := "Did not get correct config file path. Expected: %s, but got: %s"
+	assert.Equal(t, expConfigFilePath, actConfigFilePath, assertionErrMsg, expConfigFilePath, actConfigFilePath)
 }
 
 func TestGetRepoConfigReturnsCorrectErrorWhenConfigFileParsingFails(t *testing.T) {
@@ -226,18 +176,10 @@ func TestGetRepoConfigReturnsCorrectErrorWhenConfigFileParsingFails(t *testing.T
 	}
 
 	config, err := getRepoConfig("")
-
-	if config != nil {
-		t.Errorf("Config was not nil. Config was: %v", config)
-	}
-
-	if err != errConfigFileParseFailed {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", errConfigFileNotFound, err)
-	}
-
-	if !bytes.Equal(actFileContents, configFileContents) {
-		t.Errorf("Did not pass correct bytes to unmarshall function. Expected: %v, but got: %v", configFileContents, actFileContents)
-	}
+	assert.Nil(t, config)
+	assert.Equal(t, errConfigFileParseFailed, err)
+	assertionErrMsg := "Did not pass correct bytes to unmarshall function. Expected: %v, but got: %v"
+	assert.Equal(t, configFileContents, actFileContents, assertionErrMsg, configFileContents, actFileContents)
 }
 
 func TestGetRepoConfigReturnsCorrectConfig(t *testing.T) {
@@ -250,12 +192,6 @@ func TestGetRepoConfigReturnsCorrectConfig(t *testing.T) {
 	}
 
 	actConfig, err := getRepoConfig("")
-
-	if *actConfig != *config {
-		t.Errorf("Did not get correct config. Expected: %v, but got: %v", config, actConfig)
-	}
-
-	if err != nil {
-		t.Errorf("Error was not nil. Error was: %s", err)
-	}
+	assert.Equal(t, *config, *actConfig)
+	assert.Nil(t, err)
 }

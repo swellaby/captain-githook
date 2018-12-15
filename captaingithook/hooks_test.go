@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -56,9 +57,7 @@ func TestCreateAllHookFilesReturnsCorrectErrorOnHooksDirError(t *testing.T) {
 		return "", errors.New("")
 	}
 
-	if err := createAllHookFiles(); err != errInvalidGitHooksDirectoryPath {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", errInvalidGitHooksDirectoryPath, err)
-	}
+	assert.Equal(t, errInvalidGitHooksDirectoryPath, createAllHookFiles())
 }
 
 func TestCreateAllHookFilesReturnsCorrectErrorWhenSomeHooksNotCreated(t *testing.T) {
@@ -81,15 +80,8 @@ func TestCreateAllHookFilesReturnsCorrectErrorWhenSomeHooksNotCreated(t *testing
 
 		return nil
 	}
-	err := createAllHookFiles()
 
-	if err == nil {
-		t.Errorf("Expected to get an error but error was nil")
-	}
-
-	if actErrMsg := err.Error(); actErrMsg != expErrMsg {
-		t.Errorf("Did not get correct error message. Expected: %s, but got %s", expErrMsg, actErrMsg)
-	}
+	assert.Error(t, createAllHookFiles(), expErrMsg)
 }
 
 func TestCreateAllHookFilesCreatesCorrectHooks(t *testing.T) {
@@ -111,23 +103,14 @@ func TestCreateAllHookFilesCreatesCorrectHooks(t *testing.T) {
 		return nil
 	}
 	createAllHookFiles()
-
-	if len(actHookPaths) != len(expGitHooks) {
-		t.Errorf("Did not create correct number of hook files. Expected %d, but got %d", len(expGitHooks), len(actHookPaths))
-	}
-
+	assert.Equal(t, len(actHookPaths), len(expGitHooks))
 	for i, actHookPath := range actHookPaths {
 		expHookPath := filepath.Join(gitHooksPath, expGitHooks[i])
-		if actHookPath != expHookPath {
-			t.Errorf("Did not get correct hook file path. Expected: %s, but got %s", expHookPath, actHookPath)
-		}
+		assert.Equal(t, expHookPath, actHookPath)
 	}
 }
 
 func TestRemoveAllHookFilesReturnsCorrectError(t *testing.T) {
 	var expErr error
-	err := removeAllHookFiles()
-	if err != expErr {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", expErr, err)
-	}
+	assert.Equal(t, expErr, removeAllHookFiles())
 }
