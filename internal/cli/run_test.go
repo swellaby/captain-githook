@@ -2,15 +2,12 @@ package cli
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestRunCommandConfiguresUseCorrectly(t *testing.T) {
-	expUse := "run"
-	use := runCmd.Use
-	if use != expUse {
-		t.Errorf("Did not set correct use value for run command. Expected: %s, but got: %s", expUse, use)
-	}
+	assert.Equal(t, "run", runCmd.Use)
 }
 
 func TestRunCommandExecutesCorrectly(t *testing.T) {
@@ -42,22 +39,10 @@ func TestRunCommandExecutesCorrectly(t *testing.T) {
 	}
 
 	actErr := runHook(nil, nil)
-
-	if actHookLogfOutput != expHookLogfOutput {
-		t.Errorf("Did not get correct hook script output. Expected: %s, but got: %s", expOutput, actLogOutput)
-	}
-
-	if actLogOutput != expOutput {
-		t.Errorf("Did not get correct hook script output. Expected: %s, but got: %s", expOutput, actLogOutput)
-	}
-
-	if actErr != expErr {
-		t.Errorf("Did not get correct error from hook run. Expected: %s, but got: %s", expErr, actErr)
-	}
-
-	if actHookName != expHookName {
-		t.Errorf("Did not use correct hook name. Expected: %s, but got: %s", expHookName, actHookName)
-	}
+	assert.Equal(t, expHookLogfOutput, actHookLogfOutput, "Did not get correct hook script output. Expected: %s, but got: %s", expOutput, actLogOutput)
+	assert.Equal(t, expOutput, actLogOutput, "Did not get correct hook script output. Expected: %s, but got: %s", expOutput, actLogOutput)
+	assert.Equal(t, expErr, actErr, "Did not get correct error from hook run. Expected: %s, but got: %s", expErr, actErr)
+	assert.Equal(t, expHookName, actHookName, "Did not use correct hook name. Expected: %s, but got: %s", expHookName, actHookName)
 }
 
 func TestRunHookDoesNotLogEmptyOutput(t *testing.T) {
@@ -77,8 +62,5 @@ func TestRunHookDoesNotLogEmptyOutput(t *testing.T) {
 	}
 
 	runHook(nil, nil)
-
-	if logCalled {
-		t.Errorf("Log was not supposed to be called but was. Log output: %s", loggedContent)
-	}
+	assert.False(t, logCalled, "Log was not supposed to be called but was. Log output: %s", loggedContent)
 }

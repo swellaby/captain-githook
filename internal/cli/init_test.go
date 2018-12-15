@@ -3,15 +3,12 @@ package cli
 import (
 	"errors"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func TestInitCommandConfiguresUseCorrectly(t *testing.T) {
-	expUse := "init"
-	use := initCmd.Use
-	if use != expUse {
-		t.Errorf("Did not set correct use value for init command. Expected: %s, but got: %s", expUse, use)
-	}
+	assert.Equal(t, "init", initCmd.Use)
 }
 
 func TestInitializeCallsDefaultInitMethodWhenConfigFileFlagNotSet(t *testing.T) {
@@ -44,18 +41,9 @@ func TestInitializeCallsDefaultInitMethodWhenConfigFileFlagNotSet(t *testing.T) 
 	}
 
 	err := initialize(nil, nil)
-
-	if err != expError {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", expError, err)
-	}
-
-	if actGreeting != expGreeting {
-		t.Errorf("Did not get correct greeting. Expected: %s, but got: %s", expGreeting, string(actGreeting))
-	}
-
-	if actLogMessage != expLogMessage {
-		t.Errorf("Did not get correct log message. Expected: %s, but got: %s", expLogMessage, actLogMessage)
-	}
+	assert.Equal(t, expError, err, "Did not get correct error. Expected: %s, but got: %s", expError, err)
+	assert.Equal(t, expGreeting, actGreeting, "Did not get correct greeting. Expected: %s, but got: %s", expGreeting, string(actGreeting))
+	assert.Equal(t, expLogMessage, actLogMessage, "Did not get correct log message. Expected: %s, but got: %s", expLogMessage, actLogMessage)
 }
 
 func TestInitializeCallsDefaultInitMethodWhenConfigFileFlagSet(t *testing.T) {
@@ -93,22 +81,10 @@ func TestInitializeCallsDefaultInitMethodWhenConfigFileFlagSet(t *testing.T) {
 	}
 
 	err := initialize(nil, nil)
-
-	if err != expError {
-		t.Errorf("Did not get correct error. Expected: %s, but got: %s", expError, err)
-	}
-
-	if actFileName != expFileName {
-		t.Errorf("Did not pass correct desired config file name. Expected %s, but got: %s", expFileName, actFileName)
-	}
-
-	if actGreeting != expGreeting {
-		t.Errorf("Did not get correct greeting. Expected: %s, but got: %s", expGreeting, string(actGreeting))
-	}
-
-	if actLogMessage != expLogMessage {
-		t.Errorf("Did not get correct log message. Expected: %s, but got: %s", expLogMessage, actLogMessage)
-	}
+	assert.Equal(t, expError, err, "Did not get correct error. Expected: %s, but got: %s", expError, err)
+	assert.Equal(t, expFileName, actFileName, "Did not pass correct desired config file name. Expected %s, but got: %s", expFileName, actFileName)
+	assert.Equal(t, expGreeting, actGreeting, "Did not get correct greeting. Expected: %s, but got: %s", expGreeting, string(actGreeting))
+	assert.Equal(t, expLogMessage, actLogMessage, "Did not get correct log message. Expected: %s, but got: %s", expLogMessage, actLogMessage)
 }
 
 func TestShouldNotInitializeHooksWhenCIDetected(t *testing.T) {
@@ -140,12 +116,6 @@ func TestShouldNotInitializeHooksWhenCIDetected(t *testing.T) {
 	}
 
 	initialize(nil, nil)
-
-	if initFuncCalled {
-		t.Error("Initialization function should not have been called, but it was")
-	}
-
-	if actLogMessage != expLogMessage {
-		t.Errorf("Did not get correct log message. Expected: %s, but got: %s", expLogMessage, actLogMessage)
-	}
+	assert.False(t, initFuncCalled, "Initialization function should not have been called")
+	assert.Equal(t, expLogMessage, actLogMessage, "Did not get correct log message. Expected: %s, but got: %s", expLogMessage, actLogMessage)
 }
