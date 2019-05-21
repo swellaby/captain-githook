@@ -33,6 +33,12 @@ We'll be adding binary releases shortly, but for now you'll need to have your [G
 go get -u github.com/swellaby/captain-githook
 ```
 
+Note that the latest `captain-githook` version requires Go 1.12 or higher. If you need to use `captain-githook` on Go 1.11 and earlier, make sure you use the `v0.0.7` tag:
+
+```sh
+go get -u github.com/swellaby/captain-githook@v0.0.7
+```
+
 This will ensure that the captain-githook executable is available on your system for initializing your repositories (creating git hook and config files) as well as for executing your defined hook scripts.
 
 ## Getting Started
