@@ -7,4 +7,4 @@ require (
 	github.com/stretchr/testify v1.4.0
 	github.com/swellaby/ci-detective v1.0.6
 )
-
+go 1.11
