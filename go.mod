@@ -8,4 +8,3 @@ require (
 	github.com/swellaby/ci-detective v1.0.6
 )
 
-go 1.13
