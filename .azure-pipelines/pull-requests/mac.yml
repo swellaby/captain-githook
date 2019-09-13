@@ -27,8 +27,8 @@ steps:
 - bash: |
    export GOPATH=$(go env GOPATH)
    PATH=$PATH:$GOPATH/bin
-   task ci
-  displayName: 'Run CI script'
+   task coverage
+  displayName: 'Run tests'
 
 - task: PublishTestResults@2
   displayName: 'Publish unit test results'

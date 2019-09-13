@@ -18,17 +18,17 @@ steps:
   inputs:
     version: 1.12
 
-- script: |
-    export GOPATH=$(go env GOPATH)
-    PATH=$PATH:$GOPATH/bin
-    go run scripts/setup.go
+- powershell: |
+   $env:GOBIN = "$(go env GOPATH)\bin"
+   $env:PATH += ";$($env:GOBIN);"
+   go run ./scripts/setup.go
   displayName: 'Install dependencies'
 
 - bash: |
    export GOPATH=$(go env GOPATH)
    PATH=$PATH:$GOPATH/bin
-   task ci
-  displayName: 'Run CI script'
+   task coverage
+  displayName: 'Run tests'
 
 - task: PublishTestResults@2
   displayName: 'Publish unit test results'
