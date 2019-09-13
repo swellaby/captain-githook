@@ -24,9 +24,9 @@ steps:
    go run ./scripts/setup.go
   displayName: 'Install dependencies'
 
-- bash: |
-   export GOPATH=$(go env GOPATH)
-   PATH=$PATH:$GOPATH/bin
+- powershell: |
+   $env:GOBIN = "$(go env GOPATH)\bin"
+   $env:PATH += ";$($env:GOBIN);"
    task coverage
   displayName: 'Run tests'
 
