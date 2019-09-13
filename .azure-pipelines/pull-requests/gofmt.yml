@@ -6,9 +6,6 @@ pr:
 pool:
   vmImage: 'Ubuntu-16.04'
 
-variables:
-  GOBIN:  '$(GOPATH)/bin'
-
 steps:
 - task: GoTool@0
   displayName: 'Use Go 1.12'
@@ -16,8 +13,9 @@ steps:
     version: 1.12
 
 - script: |
-    PATH=$PATH:$(GOBIN)/bin
-    go run ./scripts/setup.go
+    export GOPATH=$(go env GOPATH)
+    PATH=$PATH:$GOPATH/bin
+    go get -v github.com/go-task/task/cmd/task
   displayName: 'Install dependencies'
 
 - script: |
