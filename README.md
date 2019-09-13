@@ -8,7 +8,7 @@ Cross-platform, configurable, git hook utility geared for Go codebases.
 [![Windows CI Badge][windows-ci-badge]][windows-ci-url]  
 
 [![Test Results Badge][tests-badge]][sonar-tests-url]
-[![Codecov Badge][codecov-badge]][codecov-url]
+[![Coverage Badge][coverage-badge]][coverage-url]
 [![Sonar Quality Gate Badge][sonar-quality-gate-badge]][sonar-url]  
 
 ## Contents
@@ -124,15 +124,15 @@ Not yet implemented
 [config-file-names-section]: #config-file-names
 [supported-hooks-section]: #supported-hooks
 [top-section]: #captain-githook
-[linux-ci-badge]: https://dev.azure.com/swellaby/OpenSource/_apis/build/status/captain-githook/captain-githook-PR-Linux?branchName=master&label=linux%20build
-[linux-ci-url]: https://dev.azure.com/swellaby/OpenSource/_build/latest?definitionId=25
-[mac-ci-badge]: https://dev.azure.com/swellaby/OpenSource/_apis/build/status/captain-githook/captain-githook-PR-Mac?branchName=master&label=mac%20build
-[mac-ci-url]: https://dev.azure.com/swellaby/OpenSource/_build/latest?definitionId=26
-[windows-ci-badge]: https://dev.azure.com/swellaby/OpenSource/_apis/build/status/captain-githook/captain-githook-PR-Windows?branchName=master&label=windows%20build
-[windows-ci-url]: https://dev.azure.com/swellaby/OpenSource/_build/latest?definitionId=24
-[codecov-badge]: https://img.shields.io/codecov/c/github/swellaby/captain-githook.svg
-[codecov-url]: https://codecov.io/gh/swellaby/captain-githook
-[tests-badge]: https://img.shields.io/appveyor/tests/swellaby/captain-githook.svg?label=unit%20tests
-[sonar-quality-gate-badge]: https://sonarcloud.io/api/project_badges/measure?project=swellaby%3Acaptain-githook&metric=alert_status
+[linux-ci-badge]: https://img.shields.io/azure-devops/build/swellaby/opensource/123/master.svg?label=linux%20build&style=flat-square
+[linux-ci-url]: https://dev.azure.com/swellaby/OpenSource/_build/latest?definitionId=123
+[mac-ci-badge]: https://img.shields.io/azure-devops/build/swellaby/opensource/124/master.svg?label=mac%20build&style=flat-square
+[mac-ci-url]: https://dev.azure.com/swellaby/OpenSource/_build/latest?definitionId=124
+[windows-ci-badge]: https://img.shields.io/azure-devops/build/swellaby/opensource/125/master.svg?label=windows%20build&style=flat-square
+[windows-ci-url]: https://dev.azure.com/swellaby/OpenSource/_build/latest?definitionId=125
+[coverage-badge]: https://img.shields.io/azure-devops/coverage/swellaby/opensource/123/master.svg?style=flat-square
+[coverage-url]: https://codecov.io/gh/swellaby/captain-githook
+[tests-badge]: https://img.shields.io/azure-devops/tests/swellaby/opensource/123/master.svg?label=unit%20tests&style=flat-square
+[sonar-quality-gate-badge]: https://img.shields.io/sonar/quality_gate/swellaby:captain-githook?server=https%3A%2F%2Fsonarcloud.io&style=flat-square
 [sonar-url]: https://sonarcloud.io/dashboard?id=swellaby%3Acaptain-githook
 [sonar-tests-url]: https://sonarcloud.io/component_measures?id=swellaby%3Acaptain-githook&metric=tests
