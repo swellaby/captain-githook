@@ -1,8 +1,7 @@
 {
-    "recommendations": [
-        "ms-vscode.Go",
-        "eamodio.gitlens",
-        "EditorConfig.EditorConfig",
-        "streetsidesoftware.code-spell-checker"
-    ],
+  "recommendations": [
+    "ms-vscode.Go",
+    "swellaby.common-pack",
+    "ms-azure-devops.azure-pipelines"
+  ],
 }

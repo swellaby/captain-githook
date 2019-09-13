@@ -1,0 +1,25 @@
+trigger: none
+
+pr:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- task: GoTool@0
+  displayName: 'Use Go 1.12'
+  inputs:
+    version: 1.12
+
+- script: |
+    export GOPATH=$(go env GOPATH)
+    PATH=$PATH:$GOPATH/bin
+    go run scripts/setup.go
+  displayName: 'Install dependencies'
+
+- script: |
+    export GOPATH=$(go env GOPATH)
+    PATH=$PATH:$GOPATH/bin
+    task check-gofmt
+  displayName: 'Run gofmt check'
