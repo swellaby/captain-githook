@@ -1,4 +1,5 @@
-trigger: none
+trigger:
+- master
 
 pr:
 - master
@@ -53,6 +54,7 @@ steps:
     testResultsFiles: '$(junitXmlResultsFileName)'
     searchFolder: '$(testResultsDirPath)'
     testRunTitle: '$(prTestResultsTitle)'
+  condition: succeededOrFailed()
 
 - task: PublishCodeCoverageResults@1
   displayName: 'Publish code coverage results'
@@ -60,3 +62,4 @@ steps:
     codeCoverageTool: Cobertura
     summaryFileLocation: '$(fullCoberturaResultsFilePath)'
     reportDirectory: '$(covResultsDirPath)'
+  condition: succeededOrFailed()
