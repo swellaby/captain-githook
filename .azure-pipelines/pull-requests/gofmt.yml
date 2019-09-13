@@ -15,10 +15,11 @@ steps:
 - script: |
     export GOPATH=$(go env GOPATH)
     PATH=$PATH:$GOPATH/bin
-    # go get -v github.com/go-task/task/cmd/task
     go run scripts/setup.go
   displayName: 'Install dependencies'
 
 - script: |
+    export GOPATH=$(go env GOPATH)
+    PATH=$PATH:$GOPATH/bin
     task check-gofmt
   displayName: 'Run gofmt check'
