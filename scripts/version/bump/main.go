@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/Masterminds/semver"
-	"github.com/swellaby/captain-githook/captaingithook"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"runtime"
+
+	"github.com/Masterminds/semver/v3"
+	"github.com/swellaby/captain-githook/captaingithook"
 )
 
 const versionFileContentsPrefix = `package captaingithook
