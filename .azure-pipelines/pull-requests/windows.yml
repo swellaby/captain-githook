@@ -1,0 +1,46 @@
+trigger: none
+
+pr:
+- master
+
+pool:
+  vmImage: 'vs2017-win2016'
+
+variables:
+- group: captain-githook
+- name: environment
+  value: Windows
+
+steps:
+- task: GoTool@0
+  displayName: 'Use Go 1.12'
+  inputs:
+    version: 1.12
+
+- script: |
+    export GOPATH=$(go env GOPATH)
+    PATH=$PATH:$GOPATH/bin
+    go run scripts/setup.go
+  displayName: 'Install dependencies'
+
+- bash: |
+   export GOPATH=$(go env GOPATH)
+   PATH=$PATH:$GOPATH/bin
+   task ci
+  displayName: 'Run CI script'
+
+- task: PublishTestResults@2
+  displayName: 'Publish unit test results'
+  inputs:
+    testResultsFiles: '$(junitXmlResultsFileName)'
+    searchFolder: '$(testResultsDirPath)'
+    testRunTitle: '$(prTestResultsTitle)'
+  condition: succeededOrFailed()
+
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage results'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '$(fullCoberturaResultsFilePath)'
+    reportDirectory: '$(covResultsDirPath)'
+  condition: succeededOrFailed()
