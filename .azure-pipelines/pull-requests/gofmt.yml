@@ -1,0 +1,16 @@
+trigger: none
+
+pr:
+- master
+
+pool:
+  vmImage: 'Ubuntu-16.04'
+
+steps:
+- script: |
+    go run ./scripts/setup.go
+  displayName: 'Install dependencies'
+
+- script: |
+    task check-gofmt
+  displayName: 'Run gofmt check'

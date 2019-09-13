@@ -1,32 +1,35 @@
 {
-    "files.exclude": {
-        "**/.git": true,
-        ".coverage/": true,
-        ".testresults/": true,
-        "**/*.exe": true,
-        "captain-githook": true
-    },
-    "cSpell.enabled": true,
-    "cSpell.ignorePaths": [
-        "go.mod",
-        "go.sum",
-        "**/.git/**",
-        ".vscode",
-    ],
-    "go.autocompleteUnimportedPackages": false,
-    "go.vetOnSave": "workspace",
-    "go.testOnSave": false,
-    "go.formatTool": "gofmt",
-    "go.buildTags": "vscode",
-    "[go]": {
-        "editor.formatOnSave": true
-     },
-     "go.coverageOptions": "showBothCoveredAndUncoveredCode",
-     "go.coverageDecorator": {
-         "type": "highlight",
-         "coveredHighlightColor": "rgba(64,128,128,0.5)",
-         "uncoveredHighlightColor": "rgba(128,64,64,0.25)",
-         "coveredGutterStyle": "blockblue",
-         "uncoveredGutterStyle": "slashyellow"
-     }
+  "files.exclude": {
+    "**/.git": true,
+    ".coverage/": true,
+    ".testresults/": true,
+    "**/*.exe": true,
+    "captain-githook": true
+  },
+  "cSpell.enabled": true,
+  "cSpell.ignorePaths": [
+    "go.mod",
+    "go.sum",
+    "**/.git/**",
+    ".vscode",
+  ],
+  "go.autocompleteUnimportedPackages": false,
+  "go.vetOnSave": "workspace",
+  "go.testOnSave": false,
+  "go.formatTool": "gofmt",
+  "go.buildTags": "vscode",
+  "[go]": {
+    "editor.formatOnSave": true
+  },
+  "go.coverageOptions": "showBothCoveredAndUncoveredCode",
+  "go.coverageDecorator": {
+    "type": "highlight",
+    "coveredHighlightColor": "rgba(64,128,128,0.5)",
+    "uncoveredHighlightColor": "rgba(128,64,64,0.25)",
+    "coveredGutterStyle": "blockblue",
+    "uncoveredGutterStyle": "slashyellow"
+  },
+  "files.associations": {
+    "**/.azure-pipelines/**": "azure-pipelines"
+  }
 }
