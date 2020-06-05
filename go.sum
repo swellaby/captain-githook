@@ -111,6 +111,7 @@ github.com/stretchr/testify v1.4.0 h1:2E4SXV/wtOkTonXsotYi4li6zVWxYlZuYNCXe9XRJy
 github.com/stretchr/testify v1.4.0/go.mod h1:j7eGeouHqKxXV5pUuKE4zz7dFj8WfuZ+81PSLYec5m4=
 github.com/stretchr/testify v1.5.1/go.mod h1:5W2xD1RspED5o8YsWQXVCued0rvSQ+mT+I5cxcmMvtA=
 github.com/stretchr/testify v1.6.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
+github.com/stretchr/testify v1.6.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/swellaby/ci-detective v1.0.6 h1:9tMvyIjRDfGSuCt33ZzkQagO8Hc7fPNRWtGiCQf0c/s=
 github.com/swellaby/ci-detective v1.0.6/go.mod h1:xI9BveSGwcWn9mUV2fWNt8IS5q0xqTeM45NqI4pspZ4=
 github.com/swellaby/ci-detective v1.0.12 h1:StXAh75oQ1qu8+drXQy9fR27ntb4viv55QVhD4vwlDo=
