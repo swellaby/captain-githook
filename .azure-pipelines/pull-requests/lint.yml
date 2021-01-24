@@ -4,13 +4,13 @@ pr:
 - master
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  vmImage: 'Ubuntu-latest'
 
 steps:
 - task: GoTool@0
-  displayName: 'Use Go 1.12'
+  displayName: 'Use Go 1.15'
   inputs:
-    version: 1.12
+    version: 1.15
 
 - script: |
     export GOPATH=$(go env GOPATH)
