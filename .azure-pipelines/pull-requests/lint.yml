@@ -8,8 +8,8 @@ pool:
 
 steps:
 - task: GoTool@0
-  displayName: 'Use Go 1.12'
-  inputs:
+  displayName: 'Use Go 1.15'
+  inputs5
     version: 1.12
 
 - script: |
